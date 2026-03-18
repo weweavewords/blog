@@ -8,31 +8,15 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-light: #FAFAF9;
-            --text-light: #1D1D1F;
-            --bg-dark: #000000;
-            --text-dark: #FFFFFF;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
-        .font-serif {
-            font-family: 'Crimson Pro', serif;
-        }
-        .fade-in {
-            animation: fadeIn 0.8s ease forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        :root { --bg-light: #FAFAF9; --text-light: #1D1D1F; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.5s ease, color 0.5s ease; overflow-x: hidden; }
+        .font-serif { font-family: 'Crimson Pro', serif; }
         .hide { display: none; }
-        .glass {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
+        .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .view-transition { animation: fadeIn 0.6s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        input:focus, textarea:focus { outline: none; }
+        .nav-item { transition: opacity 0.3s ease; cursor: pointer; }
     </style>
 </head>
 <body class="bg-[#FAFAF9] text-[#1D1D1F]" id="body">
@@ -40,239 +24,167 @@
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 transition-all duration-500 border-b border-black/5 bg-white/80 glass h-16" id="navbar">
         <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <!-- Brand Title (Acts as Home) -->
             <div class="text-xl font-serif font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity" onclick="showView('home')">
                 We Weave Words
             </div>
-            <div class="hidden md:flex items-center space-x-10 text-sm font-medium tracking-wide">
-                <button onclick="showView('home')" class="nav-link opacity-100">Home</button>
-                <button onclick="showView('publications')" class="nav-link opacity-40 hover:opacity-100 transition-opacity">Publications</button>
-                <button onclick="showView('about')" class="nav-link opacity-40 hover:opacity-100 transition-opacity">Collective</button>
-                <button onclick="toggleDarkMode()" class="opacity-40 hover:opacity-100 transition-opacity" id="theme-toggle">
-                    <i data-lucide="moon" class="w-[18px]"></i>
-                </button>
-                <button onclick="showView('admin')" class="bg-black text-white px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-gray-800 transition-colors" id="admin-btn">
-                    Author Entrance
-                </button>
-            </div>
-            <div class="md:hidden flex items-center gap-5">
-                <button onclick="toggleDarkMode()" class="opacity-60"><i data-lucide="moon" class="w-5"></i></button>
-                <button onclick="showView('about')" class="opacity-60"><i data-lucide="user" class="w-5"></i></button>
-                <button onclick="showView('publications')" class="opacity-60"><i data-lucide="menu" class="w-5"></i></button>
+            
+            <!-- Focused Navigation Container -->
+            <div class="flex items-center space-x-6 md:space-x-10">
+                <!-- Nav Links (Home Removed) -->
+                <div class="flex items-center space-x-6 md:space-x-8 text-sm font-medium tracking-wide">
+                    <button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100" id="nav-publications">Publications</button>
+                    <button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100" id="nav-about">Collective</button>
+                </div>
+                
+                <!-- Utilities -->
+                <div class="flex items-center space-x-4 border-l border-black/5 pl-6 md:pl-10">
+                    <button onclick="toggleDarkMode()" class="opacity-40 hover:opacity-100 transition-opacity p-1" id="theme-toggle">
+                        <i data-lucide="moon" class="w-[18px]"></i>
+                    </button>
+                    <button id="admin-nav-btn" onclick="showView('admin')" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                        Author Entrance
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
     <main class="pt-16 min-h-screen">
         <!-- Home View -->
-        <section id="view-home" class="view">
-            <div class="h-[90vh] flex flex-col items-center justify-center text-center px-6 overflow-hidden relative">
-                <div class="absolute inset-0 z-0 opacity-10 bg-gradient-to-tr from-[#EAD8C0]/30 to-transparent" id="hero-gradient"></div>
-                <h1 class="text-5xl md:text-8xl font-serif font-light mb-6 tracking-tight z-10">
-                    We Weave <span class="italic font-medium">Words</span>
-                </h1>
-                <p class="text-lg md:text-2xl font-light opacity-60 max-w-2xl font-serif z-10 leading-relaxed px-4">
-                    Where thought dissolves into language.
-                </p>
-                <button onclick="showView('publications')" class="mt-12 group flex items-center gap-3 px-10 py-4 bg-black text-white rounded-full hover:scale-105 transition-all z-10 text-[10px] font-bold uppercase tracking-widest" id="explore-btn">
+        <section id="view-home" class="view view-transition">
+            <div class="h-[80vh] flex flex-col items-center justify-center text-center px-6 relative">
+                <h1 class="text-5xl md:text-8xl font-serif font-light mb-6 tracking-tight">We Weave <span class="italic font-medium">Words</span></h1>
+                <p class="text-lg md:text-2xl font-light opacity-60 max-w-2xl font-serif">Where thought dissolves into language.</p>
+                <button onclick="showView('publications')" class="mt-12 group flex items-center gap-3 px-10 py-4 bg-black text-white rounded-full hover:scale-105 transition-all text-[10px] font-bold uppercase tracking-widest">
                     Explore Archives <i data-lucide="arrow-right" class="w-3.5 group-hover:translate-x-1 transition-transform"></i>
                 </button>
-            </div>
-
-            <div class="max-w-7xl mx-auto px-6 py-24 border-t border-black/5">
-                <div class="mb-16">
-                    <h2 class="text-[10px] uppercase tracking-[0.4em] font-bold opacity-30 mb-2">Selected Weavings</h2>
-                    <p class="text-3xl md:text-4xl font-serif italic">Recent Reflections</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12" id="home-posts-grid">
-                    <!-- Custom blogs removed -->
-                    <div class="col-span-full py-20 text-center opacity-20 font-serif italic text-lg">
-                        The loom is quiet. Awaiting the first thread.
-                    </div>
-                </div>
             </div>
         </section>
 
         <!-- Publications View -->
-        <section id="view-publications" class="view hide max-w-7xl mx-auto px-6 py-16 md:py-24">
-            <header class="mb-16 md:mb-24">
-                <h1 class="text-5xl md:text-6xl font-serif mb-12">The Archives</h1>
-                <div class="flex flex-col md:flex-row gap-8 md:items-center justify-between border-b pb-12 border-black/5">
-                    <div class="flex flex-wrap gap-2 md:gap-3" id="category-filters">
-                        <!-- Filters -->
-                    </div>
-                    <div class="relative w-full md:max-w-sm">
-                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-20 w-4"></i>
-                        <input type="text" id="search-input" placeholder="Search concepts..." class="w-full pl-12 pr-6 py-3 rounded-full bg-transparent border border-black/10 focus:outline-none focus:border-black/30 text-sm">
-                    </div>
-                </div>
-            </header>
-            <div class="grid grid-cols-1 gap-16 md:gap-24 text-center py-20" id="publications-list">
-                <!-- Custom blogs removed -->
-                <p class="opacity-30 font-serif italic text-xl">No manuscripts found in the digital vault.</p>
+        <section id="view-publications" class="view hide max-w-7xl mx-auto px-6 py-24">
+            <h1 class="text-5xl md:text-6xl font-serif mb-12">The Archives</h1>
+            <div class="flex flex-wrap gap-3 mb-12 border-b border-black/5 pb-10" id="category-filters"></div>
+            <div class="py-40 text-center opacity-30 font-serif italic text-xl">
+                No manuscripts found in the digital vault.
             </div>
         </section>
 
-        <!-- About/Collective View -->
-        <section id="view-about" class="view hide max-w-7xl mx-auto px-6 py-24 md:py-32">
-            <div class="max-w-4xl mb-24 md:mb-32">
-                <h1 class="text-5xl md:text-7xl font-serif mb-8 md:mb-12">The Collective</h1>
-                <p class="text-xl md:text-3xl font-serif opacity-50 leading-snug italic">
-                    Four minds, one loom. A closed circle dedicated to the preservation of nuance and the exploration of the profound.
-                </p>
+        <!-- Collective View -->
+        <section id="view-about" class="view hide max-w-7xl mx-auto px-6 py-24">
+            <div class="max-w-4xl mb-20">
+                <h1 class="text-5xl md:text-7xl font-serif mb-8">The Collective</h1>
+                <p class="text-2xl font-serif opacity-50 italic leading-relaxed">Five minds, one loom. Dedicated to the preservation of nuance.</p>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-32" id="authors-grid">
-                <!-- Authors -->
-            </div>
-            <div class="flex justify-center border-t border-black/5 pt-20">
-                <button onclick="showView('admin')" class="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.4em] opacity-20 hover:opacity-100 transition-opacity">
-                    Author Entrance — Members Only
-                </button>
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 mb-32" id="authors-grid"></div>
         </section>
 
-        <!-- Read View -->
-        <section id="view-read" class="view hide max-w-3xl mx-auto px-6 py-16 md:py-24">
-            <button onclick="showView('publications')" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest opacity-30 hover:opacity-100 transition-opacity mb-16">
-                <i data-lucide="arrow-left" class="w-3.5"></i> Back to Archives
-            </button>
-            <div id="post-content-target"></div>
-        </section>
-
-        <!-- Admin Login View -->
+        <!-- Login View -->
         <section id="view-admin" class="view hide min-h-[70vh] flex flex-col items-center justify-center p-6">
-            <button onclick="showView('home')" class="mb-12 text-[10px] font-bold uppercase tracking-widest opacity-20 hover:opacity-100">Exit</button>
-            <div class="max-w-md w-full p-10 md:p-12 rounded-[2.5rem] border border-black/5 bg-white shadow-2xl" id="login-card">
-                <div class="mb-10 opacity-20 flex justify-center"><i data-lucide="feather" class="w-10 h-10"></i></div>
-                <h2 class="text-xl font-serif text-center mb-10 tracking-widest uppercase opacity-60">Passcode Required</h2>
-                <input type="password" id="passcode-input" placeholder="••••••" class="w-full p-5 rounded-2xl mb-6 bg-transparent border border-black/10 focus:outline-none focus:border-black/40 text-center text-lg tracking-[0.8em]">
-                <div id="login-error" class="text-red-500 text-[9px] uppercase font-bold text-center mb-6 tracking-widest hide">Unauthorized. Access restricted.</div>
-                <button onclick="handleLogin()" class="w-full py-5 bg-black text-white rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em] hover:scale-[1.02] transition-transform">
-                    Verify
+            <div class="max-w-md w-full p-12 rounded-[2.5rem] border border-black/5 bg-white shadow-2xl">
+                <h2 class="text-xl font-serif text-center mb-10 tracking-widest uppercase opacity-60">Security Protocol</h2>
+                <input type="password" id="passcode-input" placeholder="•••••" class="w-full p-5 rounded-2xl mb-6 bg-transparent border border-black/10 text-center text-2xl tracking-[0.5em]">
+                <div id="login-error" class="text-red-500 text-[9px] uppercase font-bold text-center mb-6 hide">Incorrect Passkey.</div>
+                <button onclick="handleLogin()" class="w-full py-5 bg-black text-white rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em]">Authenticate</button>
+            </div>
+        </section>
+
+        <!-- Dashboard View -->
+        <section id="view-dashboard" class="view hide max-w-7xl mx-auto px-6 py-24">
+            <div class="flex justify-between items-end mb-16">
+                <div>
+                    <h1 class="text-4xl font-serif mb-2">The Manuscript Vault</h1>
+                    <p class="opacity-50 text-sm uppercase tracking-widest">Privileged Access Granted</p>
+                </div>
+                <button onclick="logout()" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100">
+                    <i data-lucide="log-out" class="w-3"></i> Sign Out
                 </button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-2 p-10 rounded-[2.5rem] border border-black/5 bg-white/50">
+                    <h3 class="font-serif text-xl mb-8 italic">New Weaving</h3>
+                    <input type="text" placeholder="Title of reflection..." class="w-full bg-transparent border-b border-black/10 py-4 mb-8 text-2xl font-serif italic focus:outline-none">
+                    <textarea placeholder="Begin weaving your thoughts..." class="w-full bg-transparent border-b border-black/10 py-4 mb-8 h-64 font-serif text-lg leading-relaxed focus:outline-none"></textarea>
+                    <button class="px-10 py-4 bg-black text-white rounded-full text-[10px] font-bold uppercase tracking-widest opacity-50">Secure to Vault</button>
+                </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="py-20 border-t border-black/5 text-center opacity-40">
+    <footer class="py-20 border-t border-black/5 text-center opacity-40 mt-32">
         <p class="font-serif italic text-lg mb-4">"Language is the thread, thought is the needle."</p>
-        <p class="text-[10px] uppercase tracking-[0.3em]">
-            © 2026 We Weave Words · A Closed Collective · All rights reserved
-        </p>
+        <p class="text-[10px] uppercase tracking-[0.3em]">© 2026 We Weave Words · A Closed Collective · All rights reserved</p>
     </footer>
 
     <script>
         const AUTHORS = [
-            { id: "author_1", name: "Saar Tokas", bio: "Architect of logical frameworks; exploring the boundaries between mathematical precision and human intuition.", avatar: "ST" },
-            { id: "author_2", name: "Guransh Khattar", bio: "Cultural semiotician decoding the silent dialogues of modern urban landscapes and societal structures.", avatar: "GK" },
-            { id: "author_3", name: "Diva Arora", bio: "Philosopher of aesthetics, examining the delicate intersection of visual harmony and existential truth.", avatar: "DA" },
-            { 
-                id: "author_4", 
-                name: "Shrre", 
-                bio: "A High-School Student of Humanities and an aspiring author. Navigating the shadows of Criminology and the light of Philosophy to decode the human condition.", 
-                avatar: "S" 
-            }
+            { name: "Saar Tokas", bio: "Architect of logical frameworks; exploring the boundaries between mathematical precision and human intuition.", avatar: "ST" },
+            { name: "Guransh Khattar", bio: "Cultural semiotician decoding the silent dialogues of modern urban landscapes and societal structures.", avatar: "GK" },
+            { name: "Diva Arora", bio: "A High School student. Exploring perspectives through expression. I write to transform everyday moments into evocative pieces.", avatar: "DA" },
+            { name: "Shrre", bio: "A High-School Student of Humanities and an aspiring author. Navigating the shadows of Criminology and the light of Philosophy to decode the human condition.<br><br><span class='italic opacity-60'>Searching for the syntax of the soul in the silence between thoughts.</span>", avatar: "S" },
+            { name: "Ishita Shah", bio: "A High School student. Interrogating perspectives through language, I am drawn to the nuanced juxtaposition of the ephemeral and the enduring. I write to transmute the quotidian into something contemplative, where expression becomes both inquiry and meaning.", avatar: "IS" }
         ];
-
         const CATEGORIES = ["Philosophy", "Psychology", "History", "Current Affairs", "Literature"];
-        
-        // Initializing with an empty array as requested
-        let posts = [];
-
         let darkMode = false;
-        let currentCategory = "All";
+        let isAuthenticated = false;
 
-        function init() {
-            lucide.createIcons();
-            renderAuthors();
-            renderFilters();
-            // renderPosts remains empty until user adds them via the member entrance or a database
-            document.getElementById('search-input').addEventListener('input', (e) => {
-                // If you later add search logic for dynamic posts
-            });
+        function init() { 
+            lucide.createIcons(); 
+            renderAuthors(); 
+            renderFilters(); 
         }
 
         function showView(viewId) {
+            if (viewId === 'dashboard' && !isAuthenticated) { showView('admin'); return; }
             document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
             document.getElementById(`view-${viewId}`).classList.remove('hide');
-            window.scrollTo(0, 0);
             
-            document.querySelectorAll('.nav-link').forEach(link => {
-                const isActive = link.innerText.toLowerCase() === viewId || 
-                               (viewId === 'about' && link.innerText.toLowerCase() === 'collective') ||
-                               (viewId === 'publications' && link.innerText.toLowerCase() === 'publications');
-                link.classList.toggle('opacity-100', isActive);
-                link.classList.toggle('opacity-40', !isActive);
+            document.querySelectorAll('.nav-item').forEach(link => {
+                link.classList.toggle('opacity-100', link.id === `nav-${viewId}`);
+                link.classList.toggle('opacity-40', link.id !== `nav-${viewId}`);
             });
+            window.scrollTo(0, 0);
+            lucide.createIcons();
+        }
+
+        function handleLogin() {
+            if (document.getElementById('passcode-input').value === '98987') {
+                isAuthenticated = true;
+                document.getElementById('admin-nav-btn').innerText = "Dashboard";
+                showView('dashboard');
+            } else {
+                document.getElementById('login-error').classList.remove('hide');
+            }
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            document.getElementById('admin-nav-btn').innerText = "Author Entrance";
+            showView('home');
         }
 
         function toggleDarkMode() {
             darkMode = !darkMode;
-            const body = document.getElementById('body');
-            const nav = document.getElementById('navbar');
-            const themeBtn = document.getElementById('theme-toggle');
-            const adminBtn = document.getElementById('admin-btn');
-            const loginCard = document.getElementById('login-card');
-            const exploreBtn = document.getElementById('explore-btn');
-
-            if (darkMode) {
-                body.className = "bg-black text-white";
-                nav.className = "fixed top-0 w-full z-50 transition-all duration-500 border-b border-white/10 bg-black/80 glass h-16";
-                adminBtn.className = "bg-white text-black px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-gray-200 transition-colors";
-                loginCard?.classList.replace('bg-white', 'bg-white/5');
-                loginCard?.classList.replace('border-black/5', 'border-white/10');
-                exploreBtn.classList.replace('bg-black', 'bg-white');
-                exploreBtn.classList.replace('text-white', 'text-black');
-                themeBtn.innerHTML = `<i data-lucide="sun" class="w-[18px]"></i>`;
-            } else {
-                body.className = "bg-[#FAFAF9] text-[#1D1D1F]";
-                nav.className = "fixed top-0 w-full z-50 transition-all duration-500 border-b border-black/5 bg-white/80 glass h-16";
-                adminBtn.className = "bg-black text-white px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-gray-800 transition-colors";
-                loginCard?.classList.replace('bg-white/5', 'bg-white');
-                loginCard?.classList.replace('border-white/10', 'border-black/5');
-                exploreBtn.classList.replace('bg-white', 'bg-black');
-                exploreBtn.classList.replace('text-black', 'text-white');
-                themeBtn.innerHTML = `<i data-lucide="moon" class="w-[18px]"></i>`;
-            }
+            document.getElementById('body').className = darkMode ? "bg-black text-white" : "bg-[#FAFAF9] text-[#1D1D1F]";
+            document.getElementById('theme-toggle').innerHTML = darkMode ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
             lucide.createIcons();
             renderAuthors();
         }
 
         function renderFilters() {
-            const container = document.getElementById('category-filters');
-            const cats = ["All", ...CATEGORIES];
-            container.innerHTML = cats.map(cat => `
-                <button class="px-4 md:px-5 py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest border border-current/10 opacity-40 hover:opacity-100 transition-all">
-                    ${cat}
-                </button>
-            `).join('');
+            document.getElementById('category-filters').innerHTML = ["All", ...CATEGORIES].map(cat => `<button class="px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border border-current/10 opacity-40 hover:opacity-100">${cat}</button>`).join('');
         }
 
         function renderAuthors() {
-            const container = document.getElementById('authors-grid');
-            container.innerHTML = AUTHORS.map(author => `
+            document.getElementById('authors-grid').innerHTML = AUTHORS.map(a => `
                 <div class="group">
-                    <div class="aspect-square rounded-[2rem] mb-6 md:mb-8 flex items-center justify-center font-serif text-3xl md:text-4xl font-bold transition-all duration-700 group-hover:scale-[1.02] border ${
-                        darkMode ? 'bg-white/5 border-white/10 shadow-xl shadow-white/5' : 'bg-white border-black/5 shadow-xl shadow-black/5'
-                    }">
-                        ${author.avatar}
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-serif mb-3 italic">${author.name}</h3>
-                    <p class="text-sm opacity-50 font-serif leading-relaxed italic">${author.bio}</p>
+                    <div class="aspect-square rounded-[2.5rem] mb-8 flex items-center justify-center font-serif text-3xl font-bold border border-current/10 bg-current/5 transition-all group-hover:scale-[1.05]">${a.avatar}</div>
+                    <h3 class="text-2xl font-serif italic mb-3">${a.name}</h3>
+                    <p class="text-sm opacity-50 font-serif italic leading-relaxed">${a.bio}</p>
                 </div>
             `).join('');
-        }
-
-        function handleLogin() {
-            const pass = document.getElementById('passcode-input').value.toLowerCase().trim();
-            const error = document.getElementById('login-error');
-            const matched = AUTHORS.find(a => pass === `key-${a.name.split(' ')[0].toLowerCase()}`);
-            if (matched) {
-                error.classList.add('hide');
-                alert(`Welcome, ${matched.name}. To persist your writings, you can now integrate this HTML with a backend like Firebase.`);
-            } else {
-                error.classList.remove('hide');
-            }
         }
 
         window.onload = init;
