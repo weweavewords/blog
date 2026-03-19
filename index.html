@@ -8,8 +8,33 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-light: #FAFAF9; --text-light: #1D1D1F; }
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.5s ease, color 0.5s ease; overflow-x: hidden; }
+        :root { 
+            --light-bg: #f3ebe0; 
+            --light-text: #550000; 
+            --dark-bg: #000000; 
+            --dark-text: #f3ebe0;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            transition: background-color 0.5s ease, color 0.5s ease; 
+            overflow-x: hidden; 
+        }
+
+        /* Light Mode Specifics */
+        body.light-mode { background-color: var(--light-bg); color: var(--light-text); }
+        body.light-mode .glass { background-color: rgba(243, 235, 224, 0.8); border-bottom-color: rgba(85, 0, 0, 0.1); }
+        body.light-mode .btn-primary { background-color: var(--light-text); color: var(--light-bg); }
+        body.light-mode .border-current-alpha { border-color: rgba(85, 0, 0, 0.1); }
+        body.light-mode .bg-current-alpha { background-color: rgba(85, 0, 0, 0.05); }
+
+        /* Dark Mode Specifics */
+        body.dark-mode { background-color: var(--dark-bg); color: var(--dark-text); }
+        body.dark-mode .glass { background-color: rgba(0, 0, 0, 0.8); border-bottom-color: rgba(243, 235, 224, 0.1); }
+        body.dark-mode .btn-primary { background-color: var(--dark-text); color: var(--dark-bg); }
+        body.dark-mode .border-current-alpha { border-color: rgba(243, 235, 224, 0.1); }
+        body.dark-mode .bg-current-alpha { background-color: rgba(243, 235, 224, 0.05); }
+
         .font-serif { font-family: 'Crimson Pro', serif; }
         .hide { display: none; }
         .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
@@ -19,31 +44,37 @@
         .nav-item { transition: opacity 0.3s ease; cursor: pointer; }
     </style>
 </head>
-<body class="bg-[#FAFAF9] text-[#1D1D1F]" id="body">
+<body class="light-mode" id="body">
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 transition-all duration-500 border-b border-black/5 bg-white/80 glass h-16" id="navbar">
-        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-            <!-- Brand Title (Acts as Home) -->
-            <div class="text-xl font-serif font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity" onclick="showView('home')">
+    <nav class="fixed top-0 w-full z-50 transition-all duration-500 border-b glass h-16" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-full flex items-center justify-between">
+            <!-- Brand Title -->
+            <div class="text-lg md:text-xl font-serif font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity" onclick="showView('home')">
                 We Weave Words
             </div>
             
-            <!-- Focused Navigation Container -->
-            <div class="flex items-center space-x-6 md:space-x-10">
-                <!-- Nav Links (Home Removed) -->
-                <div class="flex items-center space-x-6 md:space-x-8 text-sm font-medium tracking-wide">
-                    <button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100" id="nav-publications">Publications</button>
-                    <button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100" id="nav-about">Collective</button>
+            <div class="flex items-center space-x-3 md:space-x-10">
+                <!-- Nav Links -->
+                <div class="flex items-center space-x-4 md:space-x-8 text-sm font-medium tracking-wide">
+                    <button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100 flex items-center" id="nav-publications">
+                        <span class="hidden md:inline">Publications</span>
+                        <i data-lucide="book-open" class="w-5 md:hidden"></i>
+                    </button>
+                    <button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100 flex items-center" id="nav-about">
+                        <span class="hidden md:inline">Collective</span>
+                        <i data-lucide="users" class="w-5 md:hidden"></i>
+                    </button>
                 </div>
                 
                 <!-- Utilities -->
-                <div class="flex items-center space-x-4 border-l border-black/5 pl-6 md:pl-10">
+                <div class="flex items-center space-x-2 md:space-x-4 border-l border-current-alpha pl-3 md:pl-10">
                     <button onclick="toggleDarkMode()" class="opacity-40 hover:opacity-100 transition-opacity p-1" id="theme-toggle">
                         <i data-lucide="moon" class="w-[18px]"></i>
                     </button>
-                    <button id="admin-nav-btn" onclick="showView('admin')" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
-                        Author Entrance
+                    <button id="admin-nav-btn" onclick="showView('admin')" class="btn-primary px-3 py-2 md:px-5 md:py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                        <span class="hidden sm:inline">Author Entrance</span>
+                        <i data-lucide="key" class="w-3 sm:hidden"></i>
                     </button>
                 </div>
             </div>
@@ -56,7 +87,7 @@
             <div class="h-[80vh] flex flex-col items-center justify-center text-center px-6 relative">
                 <h1 class="text-5xl md:text-8xl font-serif font-light mb-6 tracking-tight">We Weave <span class="italic font-medium">Words</span></h1>
                 <p class="text-lg md:text-2xl font-light opacity-60 max-w-2xl font-serif">Where thought dissolves into language.</p>
-                <button onclick="showView('publications')" class="mt-12 group flex items-center gap-3 px-10 py-4 bg-black text-white rounded-full hover:scale-105 transition-all text-[10px] font-bold uppercase tracking-widest">
+                <button onclick="showView('publications')" class="mt-12 group flex items-center gap-3 px-10 py-4 btn-primary rounded-full hover:scale-105 transition-all text-[10px] font-bold uppercase tracking-widest">
                     Explore Archives <i data-lucide="arrow-right" class="w-3.5 group-hover:translate-x-1 transition-transform"></i>
                 </button>
             </div>
@@ -65,7 +96,7 @@
         <!-- Publications View -->
         <section id="view-publications" class="view hide max-w-7xl mx-auto px-6 py-24">
             <h1 class="text-5xl md:text-6xl font-serif mb-12">The Archives</h1>
-            <div class="flex flex-wrap gap-3 mb-12 border-b border-black/5 pb-10" id="category-filters"></div>
+            <div class="flex flex-wrap gap-3 mb-12 border-b border-current-alpha pb-10" id="category-filters"></div>
             <div class="py-40 text-center opacity-30 font-serif italic text-xl">
                 No manuscripts found in the digital vault.
             </div>
@@ -82,11 +113,11 @@
 
         <!-- Login View -->
         <section id="view-admin" class="view hide min-h-[70vh] flex flex-col items-center justify-center p-6">
-            <div class="max-w-md w-full p-12 rounded-[2.5rem] border border-black/5 bg-white shadow-2xl">
+            <div class="max-w-md w-full p-12 rounded-[2.5rem] border border-current-alpha bg-current-alpha">
                 <h2 class="text-xl font-serif text-center mb-10 tracking-widest uppercase opacity-60">Security Protocol</h2>
-                <input type="password" id="passcode-input" placeholder="•••••" class="w-full p-5 rounded-2xl mb-6 bg-transparent border border-black/10 text-center text-2xl tracking-[0.5em]">
-                <div id="login-error" class="text-red-500 text-[9px] uppercase font-bold text-center mb-6 hide">Incorrect Passkey.</div>
-                <button onclick="handleLogin()" class="w-full py-5 bg-black text-white rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em]">Authenticate</button>
+                <input type="password" id="passcode-input" placeholder="•••••" class="w-full p-5 rounded-2xl mb-6 bg-transparent border border-current-alpha text-center text-2xl tracking-[0.5em] text-inherit">
+                <div id="login-error" class="text-[9px] uppercase font-bold text-center mb-6 hide">Incorrect Passkey.</div>
+                <button onclick="handleLogin()" class="w-full py-5 btn-primary rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em]">Authenticate</button>
             </div>
         </section>
 
@@ -103,24 +134,24 @@
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <div class="lg:col-span-2 p-10 rounded-[2.5rem] border border-black/5 bg-white/50">
+                <div class="lg:col-span-2 p-10 rounded-[2.5rem] border border-current-alpha bg-current-alpha">
                     <h3 class="font-serif text-xl mb-8 italic">New Weaving</h3>
-                    <input type="text" placeholder="Title of reflection..." class="w-full bg-transparent border-b border-black/10 py-4 mb-8 text-2xl font-serif italic focus:outline-none">
-                    <textarea placeholder="Begin weaving your thoughts..." class="w-full bg-transparent border-b border-black/10 py-4 mb-8 h-64 font-serif text-lg leading-relaxed focus:outline-none"></textarea>
-                    <button class="px-10 py-4 bg-black text-white rounded-full text-[10px] font-bold uppercase tracking-widest opacity-50">Secure to Vault</button>
+                    <input type="text" placeholder="Title of reflection..." class="w-full bg-transparent border-b border-current-alpha py-4 mb-8 text-2xl font-serif italic focus:outline-none">
+                    <textarea placeholder="Begin weaving your thoughts..." class="w-full bg-transparent border-b border-current-alpha py-4 mb-8 h-64 font-serif text-lg leading-relaxed focus:outline-none"></textarea>
+                    <button class="px-10 py-4 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest opacity-50">Secure to Vault</button>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="py-20 border-t border-black/5 text-center opacity-40 mt-32">
+    <footer class="py-20 border-t border-current-alpha text-center opacity-40 mt-32">
         <p class="font-serif italic text-lg mb-4">"Language is the thread, thought is the needle."</p>
         <p class="text-[10px] uppercase tracking-[0.3em]">© 2026 We Weave Words · A Closed Collective · All rights reserved</p>
     </footer>
 
     <script>
         const AUTHORS = [
-            { name: "Saar Tokas", bio: "Architect of logical frameworks; exploring the boundaries between mathematical precision and human intuition.", avatar: "ST" },
+            { name: "Saar Tokas", bio: "A High School student who enjoys exploring topics like history, civics, and global issues. I write simple and engaging articles for people to help them understand and stay informed about the world.", avatar: "ST" },
             { name: "Guransh Khattar", bio: "Cultural semiotician decoding the silent dialogues of modern urban landscapes and societal structures.", avatar: "GK" },
             { name: "Diva Arora", bio: "A High School student. Exploring perspectives through expression. I write to transform everyday moments into evocative pieces.", avatar: "DA" },
             { name: "Shrre", bio: "A High-School Student of Humanities and an aspiring author. Navigating the shadows of Criminology and the light of Philosophy to decode the human condition.<br><br><span class='italic opacity-60'>Searching for the syntax of the soul in the silence between thoughts.</span>", avatar: "S" },
@@ -142,8 +173,9 @@
             document.getElementById(`view-${viewId}`).classList.remove('hide');
             
             document.querySelectorAll('.nav-item').forEach(link => {
-                link.classList.toggle('opacity-100', link.id === `nav-${viewId}`);
-                link.classList.toggle('opacity-40', link.id !== `nav-${viewId}`);
+                const isActive = link.id === `nav-${viewId}`;
+                link.classList.toggle('opacity-100', isActive);
+                link.classList.toggle('opacity-40', !isActive);
             });
             window.scrollTo(0, 0);
             lucide.createIcons();
@@ -152,7 +184,7 @@
         function handleLogin() {
             if (document.getElementById('passcode-input').value === '98987') {
                 isAuthenticated = true;
-                document.getElementById('admin-nav-btn').innerText = "Dashboard";
+                document.getElementById('admin-nav-btn').innerHTML = `<span class="hidden sm:inline">Dashboard</span><i data-lucide="layout" class="w-3 sm:hidden"></i>`;
                 showView('dashboard');
             } else {
                 document.getElementById('login-error').classList.remove('hide');
@@ -161,26 +193,35 @@
 
         function logout() {
             isAuthenticated = false;
-            document.getElementById('admin-nav-btn').innerText = "Author Entrance";
+            document.getElementById('admin-nav-btn').innerHTML = `<span class="hidden sm:inline">Author Entrance</span><i data-lucide="key" class="w-3 sm:hidden"></i>`;
             showView('home');
         }
 
         function toggleDarkMode() {
             darkMode = !darkMode;
-            document.getElementById('body').className = darkMode ? "bg-black text-white" : "bg-[#FAFAF9] text-[#1D1D1F]";
+            const body = document.getElementById('body');
+            
+            if (darkMode) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+            }
+            
             document.getElementById('theme-toggle').innerHTML = darkMode ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
             lucide.createIcons();
             renderAuthors();
         }
 
         function renderFilters() {
-            document.getElementById('category-filters').innerHTML = ["All", ...CATEGORIES].map(cat => `<button class="px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border border-current/10 opacity-40 hover:opacity-100">${cat}</button>`).join('');
+            document.getElementById('category-filters').innerHTML = ["All", ...CATEGORIES].map(cat => `<button class="px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border border-current-alpha opacity-40 hover:opacity-100">${cat}</button>`).join('');
         }
 
         function renderAuthors() {
             document.getElementById('authors-grid').innerHTML = AUTHORS.map(a => `
                 <div class="group">
-                    <div class="aspect-square rounded-[2.5rem] mb-8 flex items-center justify-center font-serif text-3xl font-bold border border-current/10 bg-current/5 transition-all group-hover:scale-[1.05]">${a.avatar}</div>
+                    <div class="aspect-square rounded-[2.5rem] mb-8 flex items-center justify-center font-serif text-3xl font-bold border border-current-alpha bg-current-alpha transition-all group-hover:scale-[1.05]">${a.avatar}</div>
                     <h3 class="text-2xl font-serif italic mb-3">${a.name}</h3>
                     <p class="text-sm opacity-50 font-serif italic leading-relaxed">${a.bio}</p>
                 </div>
