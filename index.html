@@ -489,4 +489,20 @@
         function renderFilters() {
             const filters = ["All", ...CATEGORIES];
             document.getElementById('category-filters').innerHTML = filters.map(cat => `
-                <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 $
+                <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 ${activeCategory === cat ? 'active-filter' : ''}">${cat}</button>
+            `).join('');
+        }
+
+        function renderAuthors() {
+            document.getElementById('authors-grid').innerHTML = AUTHORS_LIST.map(a => `
+                <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
+                    <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
+                    <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
+                </div>
+            `).join('');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
