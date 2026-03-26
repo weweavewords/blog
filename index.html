@@ -19,16 +19,17 @@
             font-family: 'Inter', sans-serif; 
             transition: background-color 0.5s ease, color 0.5s ease; 
             overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent;
         }
 
         body.light-mode { background-color: var(--light-bg); color: var(--light-text); }
-        body.light-mode .glass { background-color: rgba(243, 235, 224, 0.9); border-bottom-color: rgba(85, 0, 0, 0.1); }
+        body.light-mode .glass { background-color: rgba(243, 235, 224, 0.95); border-bottom-color: rgba(85, 0, 0, 0.1); }
         body.light-mode .btn-primary { background-color: var(--light-text); color: var(--light-bg); }
         body.light-mode .border-current-alpha { border-color: rgba(85, 0, 0, 0.15); }
         body.light-mode .bg-current-alpha { background-color: rgba(85, 0, 0, 0.03); }
 
         body.dark-mode { background-color: var(--dark-bg); color: var(--dark-text); }
-        body.dark-mode .glass { background-color: rgba(0, 0, 0, 0.9); border-bottom-color: rgba(243, 235, 224, 0.1); }
+        body.dark-mode .glass { background-color: rgba(0, 0, 0, 0.95); border-bottom-color: rgba(243, 235, 224, 0.1); }
         body.dark-mode .btn-primary { background-color: var(--dark-text); color: var(--dark-bg); }
         body.dark-mode .border-current-alpha { border-color: rgba(243, 235, 224, 0.15); }
         body.dark-mode .bg-current-alpha { background-color: rgba(243, 235, 224, 0.05); }
@@ -36,12 +37,13 @@
         .font-serif { font-family: 'Crimson Pro', serif; }
         .hide { display: none !important; }
         .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        
         .view-transition { animation: fadeIn 0.6s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         input, textarea, select { outline: none; background: transparent !important; color: inherit; }
         
-        .nav-item { transition: opacity 0.3s ease; cursor: pointer; }
+        .nav-item { transition: all 0.3s ease; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .active-filter { opacity: 1 !important; border-bottom: 2px solid currentColor; }
 
         .manuscript-box { 
@@ -73,32 +75,37 @@
 </head>
 <body class="light-mode" id="body">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 transition-all duration-500 border-b glass h-16" id="navbar">
+    <!-- Navigation - Redesigned for Mobile -->
+    <nav class="fixed top-0 w-full z-50 border-b glass h-16" id="navbar">
         <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
-            <div class="text-lg font-serif font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity" onclick="showView('home')">
+            <!-- Brand -->
+            <div class="text-base md:text-lg font-serif font-bold tracking-tight cursor-pointer shrink-0" onclick="showView('home')">
                 We Weave Words
             </div>
             
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-4 text-[10px] font-bold uppercase tracking-widest">
-                    <button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100 flex items-center gap-1" id="nav-publications">
-                        <i data-lucide="book-open" class="w-4"></i>
-                        <span class="hidden sm:inline">Archives</span>
+            <!-- Actions -->
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <!-- Main Nav Buttons -->
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100 p-2" id="nav-publications" title="Archives">
+                        <i data-lucide="book-open" class="w-5 md:w-4"></i>
+                        <span class="hidden md:inline ml-1 text-[10px] font-bold uppercase tracking-widest">Archives</span>
                     </button>
-                    <button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100 flex items-center gap-1" id="nav-about">
-                        <i data-lucide="users" class="w-4"></i>
-                        <span class="hidden sm:inline">Collective</span>
+                    <button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100 p-2" id="nav-about" title="Collective">
+                        <i data-lucide="users" class="w-5 md:w-4"></i>
+                        <span class="hidden md:inline ml-1 text-[10px] font-bold uppercase tracking-widest">Collective</span>
                     </button>
                 </div>
                 
+                <!-- Separator -->
                 <div class="h-6 w-[1px] bg-current opacity-10"></div>
 
-                <div class="flex items-center space-x-3">
-                    <button onclick="toggleDarkMode()" class="opacity-40 hover:opacity-100 transition-opacity p-1" id="theme-toggle">
-                        <i data-lucide="moon" class="w-[18px]"></i>
+                <!-- Tools -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleDarkMode()" class="opacity-40 hover:opacity-100 p-2" id="theme-toggle">
+                        <i data-lucide="moon" class="w-5 md:w-[18px]"></i>
                     </button>
-                    <button id="admin-nav-btn" onclick="showView('admin')" class="btn-primary px-3 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                    <button id="admin-nav-btn" onclick="showView('admin')" class="btn-primary px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest whitespace-nowrap">
                         <span id="admin-btn-text">Entrance</span>
                     </button>
                 </div>
@@ -109,7 +116,7 @@
     <main class="pt-16 min-h-screen">
         <!-- Home View -->
         <section id="view-home" class="view view-transition">
-            <div class="h-[75vh] flex flex-col items-center justify-center text-center px-6">
+            <div class="h-[70vh] flex flex-col items-center justify-center text-center px-6">
                 <h1 class="text-5xl md:text-8xl font-serif font-light mb-6 tracking-tight">We Weave <span class="italic font-medium">Words</span></h1>
                 <p class="text-lg md:text-2xl font-light opacity-60 max-w-2xl font-serif">Where thought dissolves into language.</p>
                 <button onclick="showView('publications')" class="mt-12 group flex items-center gap-3 px-10 py-4 btn-primary rounded-full hover:scale-105 transition-all text-[10px] font-bold uppercase tracking-widest">
@@ -150,20 +157,18 @@
         <!-- Publications View -->
         <section id="view-publications" class="view hide max-w-5xl mx-auto px-6 py-20">
             <h1 class="text-4xl md:text-6xl font-serif mb-8">The Archives</h1>
-            <div class="flex flex-wrap gap-3 mb-12 border-b border-current-alpha pb-8" id="category-filters"></div>
-            <div id="publications-list" class="space-y-12"></div>
+            <div class="flex flex-wrap gap-2 mb-12 border-b border-current-alpha pb-8" id="category-filters"></div>
+            <div id="publications-list" class="space-y-10"></div>
         </section>
 
-        <!-- Collective View (Fully Restored) -->
+        <!-- Collective View -->
         <section id="view-about" class="view hide max-w-7xl mx-auto px-6 py-24">
             <div class="max-w-4xl mb-24">
                 <h1 class="text-5xl md:text-7xl font-serif mb-8">The Collective</h1>
                 <p class="text-2xl font-serif opacity-50 italic leading-relaxed">Six minds, one loom. Dedicated to the preservation of nuance.</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12 mb-40" id="authors-grid">
-                <!-- Authors will be injected here with full bios -->
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12 mb-40" id="authors-grid"></div>
 
             <div class="border-t border-current-alpha pt-24 max-w-2xl">
                 <h4 class="text-[10px] font-bold uppercase tracking-[0.4em] opacity-30 mb-12">Technical Infrastructure</h4>
@@ -175,7 +180,7 @@
             </div>
         </section>
 
-        <!-- Login View -->
+        <!-- Admin / Dashboard sections -->
         <section id="view-admin" class="view hide min-h-[60vh] flex flex-col items-center justify-center p-6">
             <div class="max-w-sm w-full p-10 rounded-[2.5rem] border border-current-alpha bg-current-alpha">
                 <h2 class="text-sm font-serif text-center mb-8 tracking-widest uppercase opacity-60">Security Protocol</h2>
@@ -184,13 +189,12 @@
             </div>
         </section>
 
-        <!-- Dashboard View -->
         <section id="view-dashboard" class="view hide max-w-5xl mx-auto px-6 py-20">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
                 <h1 class="text-3xl font-serif">The Manuscript Vault</h1>
                 <button onclick="logout()" class="text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100 flex items-center gap-2">Resign</button>
             </div>
-            <div class="p-8 rounded-[2rem] border border-current-alpha bg-current-alpha relative">
+            <div class="p-6 md:p-8 rounded-[2rem] border border-current-alpha bg-current-alpha relative">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <select id="manuscript-author" class="border-b border-current-alpha py-2 font-serif italic">
                         <option value="" disabled selected>Identify Author...</option>
@@ -211,7 +215,7 @@
                 </div>
                 <input type="text" id="manuscript-title" placeholder="Title..." class="w-full border-b border-current-alpha py-3 mb-6 text-xl font-serif italic">
                 <textarea id="manuscript-content" placeholder="Weave..." class="w-full border-b border-current-alpha py-3 mb-6 h-48 font-serif text-lg leading-relaxed"></textarea>
-                <button onclick="executePublish()" class="px-8 py-3 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest" id="publish-btn">Secure to Vault</button>
+                <button onclick="executePublish()" class="w-full md:w-auto px-8 py-3 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest" id="publish-btn">Secure to Vault</button>
                 <div id="publish-success">
                     <div class="text-center p-8">
                         <h4 class="text-xl font-serif italic mb-4">Manuscript Secured</h4>
@@ -255,19 +259,24 @@
                 onSnapshot(q, (snap) => {
                     manuscripts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.timestamp - a.timestamp);
                     renderPublications();
-                });
-            } else { signInAnonymously(auth); }
+                }, (err) => console.error("Firestore error:", err));
+            } else { 
+                signInAnonymously(auth); 
+            }
         });
 
         window.showView = (id) => {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
-            document.getElementById(`view-${id}`).classList.remove('hide');
-            document.querySelectorAll('.nav-item').forEach(n => {
-                n.classList.toggle('opacity-100', n.id === `nav-${id}`);
-                n.classList.toggle('opacity-40', n.id !== `nav-${id}`);
-            });
-            window.scrollTo(0, 0);
-            lucide.createIcons();
+            const target = document.getElementById(`view-${id}`);
+            if (target) {
+                target.classList.remove('hide');
+                document.querySelectorAll('.nav-item').forEach(n => {
+                    n.classList.toggle('opacity-100', n.id === `nav-${id}`);
+                    n.classList.toggle('opacity-40', n.id !== `nav-${id}`);
+                });
+                window.scrollTo(0, 0);
+                lucide.createIcons();
+            }
         };
 
         window.handleLogin = () => {
@@ -290,12 +299,17 @@
             const category = document.getElementById('manuscript-category').value;
             const author = document.getElementById('manuscript-author').value;
             if (!title || !content || !category || !author) return;
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), {
-                title, content, category, author,
-                timestamp: Date.now(),
-                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-            });
-            document.getElementById('publish-success').classList.add('show');
+            
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), {
+                    title, content, category, author,
+                    timestamp: Date.now(),
+                    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                });
+                document.getElementById('publish-success').classList.add('show');
+            } catch (e) {
+                console.error("Publish failed", e);
+            }
         };
 
         window.resetVault = () => {
@@ -319,16 +333,18 @@
                         <span class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-50">${m.category} / ${m.date}</span>
                         ${isAuthenticated ? `<button onclick="deleteManuscript('${m.id}')" class="text-red-800 text-[9px] font-bold uppercase tracking-widest opacity-60 hover:opacity-100">Rescind</button>` : ''}
                     </div>
-                    <h2 class="text-3xl font-serif italic mb-4 leading-tight">${m.title}</h2>
-                    <p class="text-sm opacity-50 font-serif italic mb-8 border-b border-current-alpha inline-block pb-1">Woven by ${m.author}</p>
-                    <div class="font-serif text-lg leading-relaxed opacity-80 whitespace-pre-wrap">${m.content}</div>
+                    <h2 class="text-2xl md:text-3xl font-serif italic mb-4 leading-tight">${m.title}</h2>
+                    <p class="text-xs md:text-sm opacity-50 font-serif italic mb-8 border-b border-current-alpha inline-block pb-1">Woven by ${m.author}</p>
+                    <div class="font-serif text-base md:text-lg leading-relaxed opacity-80 whitespace-pre-wrap">${m.content}</div>
                 </div>
             `).join('');
             lucide.createIcons();
         };
 
         window.deleteManuscript = async (id) => {
-            if (isAuthenticated) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id));
+            if (isAuthenticated && confirm("Rescind this manuscript permanently?")) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id));
+            }
         };
 
         window.setCategoryFilter = (cat) => {
@@ -340,7 +356,7 @@
         window.renderFilters = () => {
             const cats = ["All", "Philosophy", "History", "Psychology", "Current Affairs", "Literature"];
             document.getElementById('category-filters').innerHTML = cats.map(c => `
-                <button onclick="setCategoryFilter('${c}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest ${activeCategory === c ? 'active-filter' : 'opacity-40 hover:opacity-100'}">${c}</button>
+                <button onclick="setCategoryFilter('${c}')" class="px-3 md:px-5 py-2 text-[9px] md:text-[10px] font-bold uppercase tracking-widest ${activeCategory === c ? 'active-filter' : 'opacity-40 hover:opacity-100'}">${c}</button>
             `).join('');
         };
 
@@ -348,15 +364,14 @@
             const body = document.getElementById('body');
             const isDark = body.classList.toggle('dark-mode');
             body.classList.toggle('light-mode', !isDark);
-            document.getElementById('theme-toggle').innerHTML = isDark ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
+            document.getElementById('theme-toggle').innerHTML = isDark ? `<i data-lucide="sun" class="w-5"></i>` : `<i data-lucide="moon" class="w-5"></i>`;
             lucide.createIcons();
         };
 
-        // Inject Collective Members
         document.getElementById('authors-grid').innerHTML = AUTHORS_LIST.map(a => `
-            <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
-                <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
-                <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
+            <div class="group border-l border-current-alpha pl-6 md:pl-8 transition-colors hover:border-current">
+                <h3 class="text-2xl md:text-3xl font-serif italic mb-4">${a.name}</h3>
+                <p class="text-base md:text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
             </div>
         `).join('');
 
@@ -365,3 +380,4 @@
     </script>
 </body>
 </html>
+
