@@ -10,87 +10,123 @@
     <style>
         :root { 
             --light-bg: #f3ebe0; 
-            --light-text: #550000; 
-            --dark-bg: #000000; 
+            --light-primary: #550000; /* Requested hex: 550000 */
+            --dark-bg: #0a0a0a; 
             --dark-text: #f3ebe0;
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            transition: background-color 0.4s ease; 
+            transition: background-color 0.4s ease, color 0.4s ease; 
             overflow-x: hidden;
+            background-color: var(--light-bg);
+            color: var(--light-primary);
             -webkit-font-smoothing: antialiased;
         }
 
-        body.light-mode { background-color: var(--light-bg); color: var(--light-text); }
-        body.light-mode .glass { background-color: rgba(243, 235, 224, 0.98); border-bottom: 1px solid rgba(85, 0, 0, 0.1); }
-        body.light-mode .btn-primary { background-color: var(--light-text); color: var(--light-bg); }
-        body.light-mode .border-current-alpha { border-color: rgba(85, 0, 0, 0.15); }
-        body.light-mode .bg-current-alpha { background-color: rgba(85, 0, 0, 0.04); }
-
+        body.light-mode { background-color: var(--light-bg); color: var(--light-primary); }
         body.dark-mode { background-color: var(--dark-bg); color: var(--dark-text); }
-        body.dark-mode .glass { background-color: rgba(0, 0, 0, 0.98); border-bottom: 1px solid rgba(243, 235, 224, 0.1); }
-        body.dark-mode .btn-primary { background-color: var(--dark-text); color: var(--dark-bg); }
-        body.dark-mode .border-current-alpha { border-color: rgba(243, 235, 224, 0.15); }
-        body.dark-mode .bg-current-alpha { background-color: rgba(243, 235, 224, 0.06); }
 
         .font-serif { font-family: 'Crimson Pro', serif; }
         .hide { display: none !important; }
-        .glass { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        
+        /* Fixed Header */
+        .glass { 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            background-color: rgba(243, 235, 224, 0.92);
+            border-bottom: 1px solid rgba(85, 0, 0, 0.15);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 4rem;
+        }
+        body.dark-mode .glass { 
+            background-color: rgba(10, 10, 10, 0.92);
+            border-bottom: 1px solid rgba(243, 235, 224, 0.1); 
+        }
+
+        /* Buttons */
+        .btn-primary { 
+            background-color: var(--light-primary); 
+            color: var(--light-bg); 
+            font-weight: 700;
+        }
+        body.dark-mode .btn-primary { 
+            background-color: var(--dark-text); 
+            color: var(--dark-bg); 
+        }
         
         .view-transition { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .nav-link { cursor: pointer; opacity: 0.4; transition: opacity 0.3s; padding: 0 8px; height: 100%; display: flex; align-items: center; }
-        .nav-link.active { opacity: 1; border-bottom: 2px solid currentColor; }
+        /* Navigation Links */
+        .nav-link { opacity: 0.5; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; }
+        .nav-link.active { opacity: 1; position: relative; }
+        .nav-link.active::after {
+            content: ''; position: absolute; bottom: 8px; left: 10px; right: 10px; height: 2px; background: currentColor;
+        }
 
         .manuscript-box { 
             border: 1px solid currentColor; 
             border-radius: 1.5rem;
-            padding: 1.5rem;
-            margin-bottom: 2.5rem;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            background-color: rgba(85, 0, 0, 0.02);
         }
+        body.dark-mode .manuscript-box { background-color: rgba(243, 235, 224, 0.03); }
+
+        .entrance-card {
+            background-color: rgba(85, 0, 0, 0.04);
+            border: 1px solid rgba(85, 0, 0, 0.1);
+            border-radius: 2.5rem;
+        }
+        body.dark-mode .entrance-card {
+            background-color: rgba(243, 235, 224, 0.05);
+            border: 1px solid rgba(243, 235, 224, 0.1);
+        }
+
+        input, textarea, select {
+            background: transparent !important;
+            border-bottom: 1px solid currentColor !important;
+            border-radius: 0 !important;
+            color: inherit !important;
+        }
+        input::placeholder { color: currentColor; opacity: 0.4; }
 
         #publish-success { 
             position: absolute; inset: 0; z-index: 50;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 2rem; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            display: none; align-items: center; justify-content: center;
+            border-radius: 2rem; background: inherit;
         }
-        body.light-mode #publish-success { background: var(--light-bg); }
-        body.dark-mode #publish-success { background: var(--dark-bg); }
-        #publish-success.show { opacity: 1; pointer-events: auto; }
+        #publish-success.show { display: flex; animation: fadeIn 0.3s ease; }
 
-        /* Ensure input matches the theme exactly */
-        input::placeholder { color: currentColor; opacity: 0.3; }
+        p { line-height: 1.8; }
     </style>
 </head>
 <body class="light-mode" id="body">
 
-    <!-- NAVIGATION -->
-    <nav class="fixed top-0 left-0 right-0 z-[100] h-16 glass px-4">
+    <!-- STABLE NAVIGATION -->
+    <nav class="glass px-4">
         <div class="max-w-7xl mx-auto h-full flex items-center justify-between">
-            <div class="text-sm md:text-xl font-serif font-bold cursor-pointer whitespace-nowrap" onclick="showView('home')">
+            <div class="text-[17px] md:text-xl font-serif font-bold cursor-pointer" onclick="showView('home')">
                 We Weave Words
             </div>
             
-            <div class="flex items-center h-full space-x-1 md:space-x-4">
-                <div id="nav-publications" class="nav-link" onclick="showView('publications')">
-                    <i data-lucide="book-open" class="w-5 h-5"></i>
-                    <span class="hidden md:inline ml-2 text-[10px] font-bold uppercase tracking-widest">Archives</span>
-                </div>
-                
-                <div id="nav-about" class="nav-link" onclick="showView('about')">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                    <span class="hidden md:inline ml-2 text-[10px] font-bold uppercase tracking-widest">Collective</span>
+            <div class="flex items-center space-x-2 md:space-x-5">
+                <div class="flex items-center">
+                    <div id="nav-publications" class="nav-link" onclick="showView('publications')">
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                    </div>
+                    <div id="nav-about" class="nav-link" onclick="showView('about')">
+                        <i data-lucide="users" class="w-5 h-5"></i>
+                    </div>
                 </div>
 
-                <div class="w-[1px] h-6 bg-current opacity-10 mx-1"></div>
+                <div class="w-[1px] h-6 bg-current opacity-20"></div>
 
-                <button onclick="toggleDarkMode()" class="p-2 opacity-40">
+                <button onclick="toggleDarkMode()" class="w-10 h-10 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
                     <i data-lucide="moon" id="theme-icon" class="w-5 h-5"></i>
                 </button>
 
-                <button onclick="showView('admin')" class="btn-primary px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest ml-1">
+                <button onclick="showView('admin')" class="btn-primary px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest ml-1 shadow-sm">
                     <span id="admin-btn-text">Entrance</span>
                 </button>
             </div>
@@ -100,17 +136,17 @@
     <main class="pt-16 min-h-screen">
         <!-- Home View -->
         <section id="view-home" class="view view-transition px-6 py-20">
-            <div class="max-w-4xl mx-auto text-center py-20">
-                <h1 class="text-5xl md:text-8xl font-serif font-light mb-6">We Weave <span class="italic font-medium">Words</span></h1>
-                <p class="text-lg md:text-2xl font-light opacity-60 font-serif">Where thought dissolves into language.</p>
-                <button onclick="showView('publications')" class="mt-12 px-10 py-4 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest">
+            <div class="max-w-4xl mx-auto text-center py-24 md:py-32">
+                <h1 class="text-6xl md:text-9xl font-serif font-light mb-8">We Weave <span class="italic font-medium">Words</span></h1>
+                <p class="text-xl md:text-2xl font-serif italic opacity-70">Where thought dissolves into language.</p>
+                <button onclick="showView('publications')" class="mt-14 px-12 py-5 btn-primary rounded-full text-[11px] uppercase tracking-widest">
                     Explore Archives
                 </button>
             </div>
 
-            <div class="max-w-4xl mx-auto py-24 border-t border-current-alpha">
-                <h2 class="text-3xl md:text-5xl font-serif italic mb-10">Our Purpose</h2>
-                <div class="space-y-8 text-xl md:text-2xl font-serif leading-relaxed opacity-70">
+            <div class="max-w-3xl mx-auto py-24 border-t border-current border-opacity-10">
+                <h2 class="text-4xl font-serif italic mb-10">Our Purpose</h2>
+                <div class="space-y-8 text-xl font-serif leading-relaxed opacity-85">
                     <p>We Weave Words is a sanctuary for deliberate thought. In an age of instant reactions, we choose the slow labor of weaving—taking complex threads of history, philosophy, and human nature and tying them into cohesive reflections.</p>
                     <p>This platform serves as a digital vault for six distinct voices. We invite you to explore our archives not as a source of quick information, but as a space for contemplative engagement.</p>
                 </div>
@@ -119,79 +155,83 @@
 
         <!-- Archives View -->
         <section id="view-publications" class="view hide max-w-5xl mx-auto px-6 py-20">
-            <h1 class="text-4xl md:text-6xl font-serif mb-8">The Archives</h1>
-            <div class="flex flex-wrap gap-2 mb-10 border-b border-current-alpha pb-8" id="category-filters"></div>
-            <div id="publications-list" class="space-y-12"></div>
+            <h1 class="text-5xl md:text-7xl font-serif mb-12">The Archives</h1>
+            <div class="flex flex-wrap gap-4 mb-14 border-b border-current border-opacity-10 pb-8" id="category-filters"></div>
+            <div id="publications-list" class="space-y-16"></div>
         </section>
 
         <!-- Collective View -->
         <section id="view-about" class="view hide max-w-7xl mx-auto px-6 py-24">
-            <h1 class="text-5xl md:text-7xl font-serif mb-16">The Collective</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-20 gap-x-12 mb-32" id="authors-grid">
-                <!-- Authors Injected Here -->
-            </div>
+            <h1 class="text-5xl md:text-7xl font-serif mb-20">The Collective</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-24 gap-x-12 mb-32" id="authors-grid"></div>
             
-            <div class="border-t border-current-alpha pt-24 max-w-2xl">
-                <h4 class="text-[10px] font-bold uppercase tracking-[0.4em] opacity-30 mb-8">Technical Infrastructure</h4>
+            <!-- Tech Expert Section -->
+            <div class="border-t border-current border-opacity-10 pt-24 max-w-2xl">
+                <h4 class="text-[10px] font-bold uppercase tracking-[0.4em] mb-10 opacity-50">Technical Infrastructure</h4>
                 <div class="group">
-                    <h3 class="text-3xl font-serif italic mb-4">Yashika Puri</h3>
-                    <p class="text-[11px] font-bold uppercase tracking-widest opacity-40 mb-4 italic">Our Tech Expert</p>
-                    <p class="text-lg opacity-60 font-serif italic leading-relaxed">A High School student, science student, and tech enthusiast who thrives on exploring new areas. Yashika ensures the digital loom remains steady, bridging the gap between intricate code and creative expression.</p>
+                    <h3 class="text-4xl font-serif italic mb-4">Yashika Puri</h3>
+                    <p class="text-[11px] font-bold uppercase tracking-widest opacity-60 mb-6 italic">Our Tech Expert</p>
+                    <p class="text-xl font-serif italic leading-relaxed opacity-80">A High School student, science student, and tech enthusiast who thrives on exploring new areas. Yashika ensures the digital loom remains steady, bridging the gap between intricate code and creative expression.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Security Passkey View (Themed Beige) -->
-        <section id="view-admin" class="view hide min-h-[80vh] flex flex-col items-center justify-center p-6 bg-transparent">
-            <div class="max-w-sm w-full p-10 rounded-[2.5rem] border border-current-alpha bg-current-alpha text-center">
-                <h2 class="text-[10px] font-bold uppercase tracking-widest mb-8 opacity-60">Security Protocol</h2>
-                <div class="relative mb-6">
-                    <input type="password" id="passcode-input" placeholder="•••••" class="w-full p-4 rounded-xl bg-transparent border border-current-alpha text-center text-xl tracking-widest font-serif placeholder-current">
-                </div>
-                <button onclick="handleLogin()" class="w-full py-4 btn-primary rounded-xl font-bold uppercase text-[10px] tracking-widest">Verify Entrance</button>
+        <!-- Passkey Entrance -->
+        <section id="view-admin" class="view hide min-h-[80vh] flex flex-col items-center justify-center p-6">
+            <div class="max-w-sm w-full p-12 entrance-card text-center view-transition shadow-lg">
+                <h2 class="text-[11px] font-bold uppercase tracking-[0.4em] mb-12 opacity-50">Security Protocol</h2>
+                <input type="password" id="passcode-input" placeholder="•••••" class="w-full py-4 text-center text-4xl tracking-widest font-serif focus:outline-none mb-12">
+                <button onclick="handleLogin()" class="w-full py-5 btn-primary rounded-2xl font-bold uppercase text-[11px] tracking-widest">Verify Entrance</button>
             </div>
         </section>
 
-        <!-- Dashboard View -->
+        <!-- Dashboard -->
         <section id="view-dashboard" class="view hide max-w-5xl mx-auto px-6 py-20">
-            <div class="flex justify-between items-center mb-10">
-                <h1 class="text-2xl font-serif">Manuscript Vault</h1>
-                <button onclick="logout()" class="text-[9px] font-bold uppercase opacity-40">Resign</button>
+            <div class="flex justify-between items-center mb-12">
+                <h1 class="text-3xl font-serif italic">Manuscript Vault</h1>
+                <button onclick="logout()" class="text-[11px] font-bold uppercase opacity-60 hover:opacity-100">Resign</button>
             </div>
-            <div class="p-8 rounded-[2rem] border border-current-alpha bg-current-alpha relative">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <select id="manuscript-author" class="border-b border-current-alpha py-2 font-serif italic">
-                        <option value="" disabled selected>Identify Author...</option>
-                        <option value="Saar Tokas">Saar Tokas</option>
-                        <option value="Guransh Khattar">Guransh Khattar</option>
-                        <option value="Diva Arora">Diva Arora</option>
-                        <option value="Shrre">Shrre</option>
-                        <option value="Ishita Shah">Ishita Shah</option>
-                    </select>
-                    <select id="manuscript-category" class="border-b border-current-alpha py-2 font-serif italic">
-                        <option value="" disabled selected>Choose Category...</option>
-                        <option value="Philosophy">Philosophy</option>
-                        <option value="History">History</option>
-                        <option value="Psychology">Psychology</option>
-                        <option value="Current Affairs">Current Affairs</option>
-                        <option value="Literature">Literature</option>
-                    </select>
+            <div class="p-10 entrance-card relative">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                    <div class="flex flex-col">
+                        <label class="text-[9px] uppercase font-bold mb-2 opacity-50">Author</label>
+                        <select id="manuscript-author" class="py-4 font-serif italic focus:outline-none text-lg">
+                            <option value="" disabled selected>Identify...</option>
+                            <option value="Saar Tokas">Saar Tokas</option>
+                            <option value="Guransh Khattar">Guransh Khattar</option>
+                            <option value="Diva Arora">Diva Arora</option>
+                            <option value="Shrre">Shrre</option>
+                            <option value="Ishita Shah">Ishita Shah</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[9px] uppercase font-bold mb-2 opacity-50">Category</label>
+                        <select id="manuscript-category" class="py-4 font-serif italic focus:outline-none text-lg">
+                            <option value="" disabled selected>Choose...</option>
+                            <option value="Philosophy">Philosophy</option>
+                            <option value="History">History</option>
+                            <option value="Psychology">Psychology</option>
+                            <option value="Current Affairs">Current Affairs</option>
+                            <option value="Literature">Literature</option>
+                        </select>
+                    </div>
                 </div>
-                <input type="text" id="manuscript-title" placeholder="Title..." class="w-full border-b border-current-alpha py-3 mb-6 text-xl font-serif italic">
-                <textarea id="manuscript-content" placeholder="Weave..." class="w-full border-b border-current-alpha py-3 mb-6 h-48 font-serif text-lg leading-relaxed"></textarea>
-                <button onclick="executePublish()" class="px-8 py-3 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest">Secure Manuscript</button>
+                <input type="text" id="manuscript-title" placeholder="Manuscript Title..." class="w-full py-5 mb-10 text-3xl font-serif italic focus:outline-none">
+                <textarea id="manuscript-content" placeholder="Begin weaving your thoughts..." class="w-full py-5 mb-14 h-96 font-serif text-xl leading-relaxed focus:outline-none"></textarea>
+                <button onclick="executePublish()" class="px-14 py-5 btn-primary rounded-full text-[11px] font-bold uppercase tracking-widest">Secure Manuscript</button>
+                
                 <div id="publish-success">
-                    <div class="text-center p-8">
-                        <h4 class="text-xl font-serif italic mb-4">Manuscript Secured</h4>
-                        <button onclick="resetVault()" class="text-[9px] font-bold uppercase border-b border-current pb-1">New Weaving</button>
+                    <div class="text-center p-12">
+                        <h4 class="text-3xl font-serif italic mb-6">Manuscript Secured in Database.</h4>
+                        <button onclick="resetVault()" class="text-[11px] font-bold uppercase border-b-2 border-current pb-2">New Weaving</button>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="py-16 text-center opacity-30 border-t border-current-alpha mt-20">
-        <p class="text-[9px] uppercase tracking-[0.3em]">© 2026 We Weave Words · A Closed Collective</p>
+    <footer class="py-32 text-center border-t border-current border-opacity-10 mt-20 opacity-40">
+        <p class="text-[10px] uppercase tracking-[0.4em]">© 2026 We Weave Words · A Closed Collective</p>
     </footer>
 
     <script type="module">
@@ -203,7 +243,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'we-weave-words-v1';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'we-weave-words-master';
 
         const FULL_AUTHORS = [
             { name: "Saar Tokas", bio: "A High School student who enjoys exploring topics like history, civics, and global issues. Writes simple and engaging articles for people to help them understand and stay informed about the world." },
@@ -222,7 +262,7 @@
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), (snap) => {
                     manuscripts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.timestamp - a.timestamp);
                     renderManuscripts();
-                });
+                }, (err) => console.error("Database connection issue:", err));
             } else { signInAnonymously(auth); }
         });
 
@@ -239,7 +279,7 @@
         window.handleLogin = () => {
             if (document.getElementById('passcode-input').value === '98987') {
                 isAuth = true;
-                document.getElementById('admin-btn-text').innerText = "Dashboard";
+                document.getElementById('admin-btn-text').innerText = "Vault";
                 showView('dashboard');
             }
         };
@@ -256,12 +296,16 @@
             const cat = document.getElementById('manuscript-category').value;
             const authName = document.getElementById('manuscript-author').value;
             if (!title || !content || !cat || !authName) return;
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), {
-                title, content, category: cat, author: authName,
-                timestamp: Date.now(),
-                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-            });
-            document.getElementById('publish-success').classList.add('show');
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), {
+                    title, content, category: cat, author: authName,
+                    timestamp: Date.now(),
+                    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                });
+                document.getElementById('publish-success').classList.add('show');
+            } catch (e) {
+                console.error("Upload failed:", e);
+            }
         };
 
         window.resetVault = () => {
@@ -274,24 +318,24 @@
             const list = document.getElementById('publications-list');
             const filtered = activeCat === "All" ? manuscripts : manuscripts.filter(m => m.category === activeCat);
             if (filtered.length === 0) {
-                list.innerHTML = `<div class="py-24 text-center opacity-30 font-serif italic text-xl">The vault is silent.</div>`;
+                list.innerHTML = `<div class="py-24 text-center opacity-40 font-serif italic text-2xl">The vault is currently silent.</div>`;
                 return;
             }
             list.innerHTML = filtered.map(m => `
-                <div class="manuscript-box bg-current-alpha border-current-alpha view-transition">
-                    <div class="flex justify-between items-start mb-6">
-                        <span class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-40">${m.category} / ${m.date}</span>
-                        ${isAuth ? `<button onclick="deleteDocById('${m.id}')" class="text-red-800 text-[8px] font-bold uppercase">Rescind</button>` : ''}
+                <div class="manuscript-box view-transition">
+                    <div class="flex justify-between items-start mb-10">
+                        <span class="text-[11px] uppercase font-bold tracking-[0.2em] opacity-50">${m.category} / ${m.date}</span>
+                        ${isAuth ? `<button onclick="deleteDocById('${m.id}')" class="text-red-700 text-[10px] font-bold uppercase tracking-widest">Rescind</button>` : ''}
                     </div>
-                    <h2 class="text-3xl font-serif italic mb-4 leading-tight">${m.title}</h2>
-                    <p class="text-sm opacity-50 font-serif italic mb-8 border-b border-current-alpha inline-block pb-1">Woven by ${m.author}</p>
-                    <div class="font-serif text-lg leading-relaxed opacity-80 whitespace-pre-wrap">${m.content}</div>
+                    <h2 class="text-4xl md:text-5xl font-serif italic mb-6 leading-tight">${m.title}</h2>
+                    <p class="text-lg opacity-50 font-serif italic mb-10">Woven by ${m.author}</p>
+                    <div class="font-serif text-xl leading-relaxed opacity-90 whitespace-pre-wrap">${m.content}</div>
                 </div>
             `).join('');
         };
 
         window.deleteDocById = async (id) => {
-            if (confirm("Permanently rescind?")) {
+            if (confirm("Permanently rescind this manuscript?")) {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id));
             }
         };
@@ -305,7 +349,7 @@
         window.renderFilters = () => {
             const cats = ["All", "Philosophy", "History", "Psychology", "Current Affairs", "Literature"];
             document.getElementById('category-filters').innerHTML = cats.map(c => `
-                <button onclick="setCat('${c}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest ${activeCat === c ? 'active' : 'opacity-40'}">${c}</button>
+                <button onclick="setCat('${c}')" class="px-6 py-2 text-[11px] font-bold uppercase tracking-widest transition-all ${activeCat === c ? 'opacity-100 border-b-2 border-current' : 'opacity-40 hover:opacity-100'}">${c}</button>
             `).join('');
         };
 
@@ -317,10 +361,11 @@
             lucide.createIcons();
         };
 
+        // Render Authors
         document.getElementById('authors-grid').innerHTML = FULL_AUTHORS.map(a => `
-            <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
-                <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
-                <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
+            <div class="group border-l-2 border-current border-opacity-10 pl-8">
+                <h3 class="text-4xl font-serif italic mb-6">${a.name}</h3>
+                <p class="text-xl font-serif italic leading-relaxed opacity-80">${a.bio}</p>
             </div>
         `).join('');
 
@@ -329,4 +374,3 @@
     </script>
 </body>
 </html>
-
