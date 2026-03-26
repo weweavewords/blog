@@ -21,15 +21,14 @@
             overflow-x: hidden; 
         }
 
-        /* Mode Styles */
         body.light-mode { background-color: var(--light-bg); color: var(--light-text); }
-        body.light-mode .glass { background-color: rgba(243, 235, 224, 0.85); border-bottom-color: rgba(85, 0, 0, 0.1); }
+        body.light-mode .glass { background-color: rgba(243, 235, 224, 0.9); border-bottom-color: rgba(85, 0, 0, 0.1); }
         body.light-mode .btn-primary { background-color: var(--light-text); color: var(--light-bg); }
         body.light-mode .border-current-alpha { border-color: rgba(85, 0, 0, 0.15); }
         body.light-mode .bg-current-alpha { background-color: rgba(85, 0, 0, 0.03); }
 
         body.dark-mode { background-color: var(--dark-bg); color: var(--dark-text); }
-        body.dark-mode .glass { background-color: rgba(0, 0, 0, 0.85); border-bottom-color: rgba(243, 235, 224, 0.1); }
+        body.dark-mode .glass { background-color: rgba(0, 0, 0, 0.9); border-bottom-color: rgba(243, 235, 224, 0.1); }
         body.dark-mode .btn-primary { background-color: var(--dark-text); color: var(--dark-bg); }
         body.dark-mode .border-current-alpha { border-color: rgba(243, 235, 224, 0.15); }
         body.dark-mode .bg-current-alpha { background-color: rgba(243, 235, 224, 0.05); }
@@ -41,11 +40,20 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         
         input, textarea, select { outline: none; background: transparent !important; color: inherit; }
-        select option { background: var(--light-bg); color: var(--light-text); }
-        body.dark-mode select option { background: var(--dark-bg); color: var(--dark-text); }
         
         .nav-item { transition: opacity 0.3s ease; cursor: pointer; }
-        
+        .active-filter { opacity: 1 !important; border-bottom: 2px solid currentColor; }
+
+        .manuscript-box { 
+            border: 1px solid currentColor; 
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        @media (min-width: 768px) {
+            .manuscript-box { padding: 2.5rem; }
+        }
+
         #publish-success { 
             position: absolute;
             inset: 0;
@@ -53,7 +61,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 2.5rem;
+            border-radius: 2rem;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
@@ -61,62 +69,37 @@
         body.light-mode #publish-success { background-color: var(--light-bg); }
         body.dark-mode #publish-success { background-color: var(--dark-bg); }
         #publish-success.show { opacity: 1; pointer-events: auto; }
-
-        .manuscript-box { 
-            border: 1px solid currentColor; 
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-        
-        .active-filter { opacity: 1 !important; border-bottom: 2px solid currentColor; }
-
-        .interaction-btn { 
-            display: flex; 
-            align-items: center; 
-            gap: 0.5rem; 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            letter-spacing: 0.1em; 
-            font-weight: 700;
-            opacity: 0.4;
-            transition: opacity 0.2s ease;
-        }
-        .interaction-btn:hover { opacity: 1; }
-        .liked { color: #cc0000; opacity: 1; }
-        
-        .comment-item { border-top: 1px solid rgba(128,128,128,0.1); padding-top: 1rem; margin-top: 1rem; }
     </style>
 </head>
 <body class="light-mode" id="body">
 
-    <!-- Navigation (Restored to Initial Code) -->
+    <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 transition-all duration-500 border-b glass h-16" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 h-full flex items-center justify-between">
-            <div class="text-lg md:text-xl font-serif font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity" onclick="showView('home')">
+        <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+            <div class="text-lg font-serif font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity" onclick="showView('home')">
                 We Weave Words
             </div>
             
-            <div class="flex items-center space-x-3 md:space-x-10">
-                <div class="flex items-center space-x-4 md:space-x-8 text-sm font-medium tracking-wide">
-                    <button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100 flex items-center" id="nav-publications">
-                        <span class="hidden md:inline">Publications</span>
-                        <i data-lucide="book-open" class="w-5 md:hidden"></i>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4 text-[10px] font-bold uppercase tracking-widest">
+                    <button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100 flex items-center gap-1" id="nav-publications">
+                        <i data-lucide="book-open" class="w-4"></i>
+                        <span class="hidden sm:inline">Archives</span>
                     </button>
-                    <button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100 flex items-center" id="nav-about">
-                        <span class="hidden md:inline">Collective</span>
-                        <i data-lucide="users" class="w-5 md:hidden"></i>
+                    <button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100 flex items-center gap-1" id="nav-about">
+                        <i data-lucide="users" class="w-4"></i>
+                        <span class="hidden sm:inline">Collective</span>
                     </button>
                 </div>
                 
-                <div class="flex items-center space-x-2 md:space-x-4 border-l border-current-alpha pl-3 md:pl-10">
+                <div class="h-6 w-[1px] bg-current opacity-10"></div>
+
+                <div class="flex items-center space-x-3">
                     <button onclick="toggleDarkMode()" class="opacity-40 hover:opacity-100 transition-opacity p-1" id="theme-toggle">
                         <i data-lucide="moon" class="w-[18px]"></i>
                     </button>
-                    <button id="admin-nav-btn" onclick="showView('admin')" class="btn-primary px-3 py-2 md:px-5 md:py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
-                        <span class="hidden sm:inline" id="admin-btn-text">Author Entrance</span>
-                        <i data-lucide="key" class="w-3 sm:hidden" id="admin-btn-icon"></i>
+                    <button id="admin-nav-btn" onclick="showView('admin')" class="btn-primary px-3 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                        <span id="admin-btn-text">Entrance</span>
                     </button>
                 </div>
             </div>
@@ -126,7 +109,7 @@
     <main class="pt-16 min-h-screen">
         <!-- Home View -->
         <section id="view-home" class="view view-transition">
-            <div class="h-[70vh] flex flex-col items-center justify-center text-center px-6 relative">
+            <div class="h-[75vh] flex flex-col items-center justify-center text-center px-6">
                 <h1 class="text-5xl md:text-8xl font-serif font-light mb-6 tracking-tight">We Weave <span class="italic font-medium">Words</span></h1>
                 <p class="text-lg md:text-2xl font-light opacity-60 max-w-2xl font-serif">Where thought dissolves into language.</p>
                 <button onclick="showView('publications')" class="mt-12 group flex items-center gap-3 px-10 py-4 btn-primary rounded-full hover:scale-105 transition-all text-[10px] font-bold uppercase tracking-widest">
@@ -165,24 +148,22 @@
         </section>
 
         <!-- Publications View -->
-        <section id="view-publications" class="view hide max-w-5xl mx-auto px-6 py-24">
-            <h1 class="text-5xl md:text-6xl font-serif mb-12">The Archives</h1>
-            <div class="flex flex-wrap gap-3 mb-12 border-b border-current-alpha pb-10" id="category-filters"></div>
-            
-            <div id="publications-list" class="space-y-12">
-                <div class="py-40 text-center opacity-30 font-serif italic text-xl">
-                    Gathering manuscripts...
-                </div>
-            </div>
+        <section id="view-publications" class="view hide max-w-5xl mx-auto px-6 py-20">
+            <h1 class="text-4xl md:text-6xl font-serif mb-8">The Archives</h1>
+            <div class="flex flex-wrap gap-3 mb-12 border-b border-current-alpha pb-8" id="category-filters"></div>
+            <div id="publications-list" class="space-y-12"></div>
         </section>
 
-        <!-- Collective View -->
+        <!-- Collective View (Fully Restored) -->
         <section id="view-about" class="view hide max-w-7xl mx-auto px-6 py-24">
             <div class="max-w-4xl mb-24">
                 <h1 class="text-5xl md:text-7xl font-serif mb-8">The Collective</h1>
                 <p class="text-2xl font-serif opacity-50 italic leading-relaxed">Six minds, one loom. Dedicated to the preservation of nuance.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12 mb-40" id="authors-grid"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12 mb-40" id="authors-grid">
+                <!-- Authors will be injected here with full bios -->
+            </div>
 
             <div class="border-t border-current-alpha pt-24 max-w-2xl">
                 <h4 class="text-[10px] font-bold uppercase tracking-[0.4em] opacity-30 mb-12">Technical Infrastructure</h4>
@@ -195,88 +176,66 @@
         </section>
 
         <!-- Login View -->
-        <section id="view-admin" class="view hide min-h-[70vh] flex flex-col items-center justify-center p-6">
-            <div class="max-w-md w-full p-12 rounded-[2.5rem] border border-current-alpha bg-current-alpha">
-                <h2 class="text-xl font-serif text-center mb-10 tracking-widest uppercase opacity-60">Security Protocol</h2>
-                <input type="password" id="passcode-input" placeholder="•••••" class="w-full p-5 rounded-2xl mb-6 bg-transparent border border-current-alpha text-center text-2xl tracking-[0.5em] text-inherit">
-                <div id="login-error" class="text-[9px] uppercase font-bold text-center mb-6 hide">Incorrect Passkey.</div>
-                <button onclick="handleLogin()" class="w-full py-5 btn-primary rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em]">Authenticate</button>
+        <section id="view-admin" class="view hide min-h-[60vh] flex flex-col items-center justify-center p-6">
+            <div class="max-w-sm w-full p-10 rounded-[2.5rem] border border-current-alpha bg-current-alpha">
+                <h2 class="text-sm font-serif text-center mb-8 tracking-widest uppercase opacity-60">Security Protocol</h2>
+                <input type="password" id="passcode-input" placeholder="•••••" class="w-full p-4 rounded-xl mb-4 bg-transparent border border-current-alpha text-center text-xl tracking-[0.5em]">
+                <button onclick="handleLogin()" class="w-full py-4 btn-primary rounded-xl font-bold uppercase text-[10px] tracking-widest">Authenticate</button>
             </div>
         </section>
 
         <!-- Dashboard View -->
-        <section id="view-dashboard" class="view hide max-w-7xl mx-auto px-6 py-24">
-            <div class="flex justify-between items-end mb-16">
-                <div>
-                    <h1 class="text-4xl font-serif mb-2">The Manuscript Vault</h1>
-                    <p class="opacity-50 text-sm uppercase tracking-widest">Privileged Access Granted</p>
-                </div>
-                <button onclick="logout()" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100">
-                    <i data-lucide="log-out" class="w-3"></i> Sign Out
-                </button>
+        <section id="view-dashboard" class="view hide max-w-5xl mx-auto px-6 py-20">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+                <h1 class="text-3xl font-serif">The Manuscript Vault</h1>
+                <button onclick="logout()" class="text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100 flex items-center gap-2">Resign</button>
             </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <div class="lg:col-span-2 p-10 rounded-[2.5rem] border border-current-alpha bg-current-alpha relative overflow-hidden">
-                    <h3 class="font-serif text-xl mb-8 italic">New Weaving</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div>
-                            <label class="text-[9px] uppercase tracking-widest font-bold opacity-40 block mb-2">Identify Yourself</label>
-                            <select id="manuscript-author" class="w-full border-b border-current-alpha py-2 font-serif italic text-lg cursor-pointer">
-                                <option value="" disabled selected>Choose Author...</option>
-                                <option value="Saar Tokas">Saar Tokas</option>
-                                <option value="Guransh Khattar">Guransh Khattar</option>
-                                <option value="Diva Arora">Diva Arora</option>
-                                <option value="Shrre">Shrre</option>
-                                <option value="Ishita Shah">Ishita Shah</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[9px] uppercase tracking-widest font-bold opacity-40 block mb-2">Select Category</label>
-                            <select id="manuscript-category" class="w-full border-b border-current-alpha py-2 font-serif italic text-lg cursor-pointer">
-                                <option value="" disabled selected>Choose a category...</option>
-                                <option value="Philosophy">Philosophy</option>
-                                <option value="History">History</option>
-                                <option value="Psychology">Psychology</option>
-                                <option value="Current Affairs">Current Affairs</option>
-                                <option value="Literature">Literature</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <input type="text" id="manuscript-title" placeholder="Title of reflection..." class="w-full bg-transparent border-b border-current-alpha py-4 mb-8 text-2xl font-serif italic text-inherit">
-                    <textarea id="manuscript-content" placeholder="Begin weaving your thoughts..." class="w-full bg-transparent border-b border-current-alpha py-4 mb-8 h-64 font-serif text-lg leading-relaxed text-inherit"></textarea>
-                    
-                    <button onclick="executePublish()" class="px-10 py-4 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95" id="publish-btn">
-                        Secure to Vault
-                    </button>
-
-                    <div id="publish-success">
-                        <div class="text-center p-8">
-                            <i data-lucide="check-circle" class="w-12 h-12 mx-auto mb-4"></i>
-                            <h4 class="text-2xl font-serif italic mb-2">Manuscript Secured</h4>
-                            <p class="text-sm opacity-60 mb-6 tracking-wide">The thread has been woven into the digital archive.</p>
-                            <div class="flex flex-col gap-4 items-center">
-                                <button onclick="resetVault()" class="text-[10px] font-bold uppercase tracking-widest border-b border-current-alpha pb-1">Weave Another</button>
-                                <button onclick="showView('publications')" class="text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100">View Public Archive</button>
-                            </div>
-                        </div>
+            <div class="p-8 rounded-[2rem] border border-current-alpha bg-current-alpha relative">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <select id="manuscript-author" class="border-b border-current-alpha py-2 font-serif italic">
+                        <option value="" disabled selected>Identify Author...</option>
+                        <option value="Saar Tokas">Saar Tokas</option>
+                        <option value="Guransh Khattar">Guransh Khattar</option>
+                        <option value="Diva Arora">Diva Arora</option>
+                        <option value="Shrre">Shrre</option>
+                        <option value="Ishita Shah">Ishita Shah</option>
+                    </select>
+                    <select id="manuscript-category" class="border-b border-current-alpha py-2 font-serif italic">
+                        <option value="" disabled selected>Choose Category...</option>
+                        <option value="Philosophy">Philosophy</option>
+                        <option value="History">History</option>
+                        <option value="Psychology">Psychology</option>
+                        <option value="Current Affairs">Current Affairs</option>
+                        <option value="Literature">Literature</option>
+                    </select>
+                </div>
+                <input type="text" id="manuscript-title" placeholder="Title..." class="w-full border-b border-current-alpha py-3 mb-6 text-xl font-serif italic">
+                <textarea id="manuscript-content" placeholder="Weave..." class="w-full border-b border-current-alpha py-3 mb-6 h-48 font-serif text-lg leading-relaxed"></textarea>
+                <button onclick="executePublish()" class="px-8 py-3 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest" id="publish-btn">Secure to Vault</button>
+                <div id="publish-success">
+                    <div class="text-center p-8">
+                        <h4 class="text-xl font-serif italic mb-4">Manuscript Secured</h4>
+                        <button onclick="resetVault()" class="text-[9px] font-bold uppercase border-b border-current-alpha pb-1">New Weaving</button>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="py-20 border-t border-current-alpha text-center opacity-40 mt-32">
-        <p class="font-serif italic text-lg mb-4">"Language is the thread, thought is the needle."</p>
-        <p class="text-[10px] uppercase tracking-[0.3em]">© 2026 We Weave Words · A Closed Collective · All rights reserved</p>
+    <footer class="py-16 text-center opacity-30 border-t border-current-alpha mt-20">
+        <p class="text-[9px] uppercase tracking-[0.3em]">© 2026 We Weave Words · A Closed Collective</p>
     </footer>
 
-    <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'we-weave-words-v1';
 
         const AUTHORS_LIST = [
             { name: "Saar Tokas", bio: "A High School student who enjoys exploring topics like history, civics, and global issues. Writes simple and engaging articles for people to help them understand and stay informed about the world." },
@@ -285,63 +244,91 @@
             { name: "Shrre", bio: "A High-School Student of Humanities and an aspiring author. Navigating the shadows of Criminology and the light of Philosophy to decode the depths of humanity. Strives to thread crime and philosophy into the realms of human nature." },
             { name: "Ishita Shah", bio: "Interrogating perspectives through language, drawn to the nuanced juxtaposition of the ephemeral and the enduring. Writes to transmute the quotidian into something contemplative, where expression becomes both inquiry and meaning." }
         ];
-        
-        const CATEGORIES = ["Philosophy", "History", "Psychology", "Current Affairs", "Literature"];
-        
-        // Initial State
-        let darkMode = false;
-        let isAuthenticated = false;
-        let activeCategory = "All";
+
         let manuscripts = [];
-        let user = null;
+        let activeCategory = "All";
+        let isAuthenticated = false;
 
-        // Firebase Configuration
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'we-weave-words-v1';
-
-        // Firebase Auth Init
-        async function initAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (e) { console.error("Auth error", e); }
-        }
-
-        onAuthStateChanged(auth, (u) => {
-            user = u;
-            if (user) setupDataListener();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const q = collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts');
+                onSnapshot(q, (snap) => {
+                    manuscripts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.timestamp - a.timestamp);
+                    renderPublications();
+                });
+            } else { signInAnonymously(auth); }
         });
 
-        function setupDataListener() {
-            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts');
-            onSnapshot(colRef, (snap) => {
-                manuscripts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-                    .sort((a, b) => b.timestamp - a.timestamp);
-                renderPublications();
-            });
-        }
-
-        // Window Methods
-        window.showView = (viewId) => {
-            if (viewId === 'dashboard' && !isAuthenticated) { showView('admin'); return; }
+        window.showView = (id) => {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
-            document.getElementById(`view-${viewId}`).classList.remove('hide');
-            
-            document.querySelectorAll('.nav-item').forEach(link => {
-                const isActive = link.id === `nav-${viewId}`;
-                link.classList.toggle('opacity-100', isActive);
-                link.classList.toggle('opacity-40', !isActive);
+            document.getElementById(`view-${id}`).classList.remove('hide');
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.toggle('opacity-100', n.id === `nav-${id}`);
+                n.classList.toggle('opacity-40', n.id !== `nav-${id}`);
             });
-
-            if (viewId === 'publications') renderPublications();
             window.scrollTo(0, 0);
             lucide.createIcons();
+        };
+
+        window.handleLogin = () => {
+            if (document.getElementById('passcode-input').value === '98987') {
+                isAuthenticated = true;
+                document.getElementById('admin-btn-text').innerText = "Dashboard";
+                showView('dashboard');
+            }
+        };
+
+        window.logout = () => {
+            isAuthenticated = false;
+            document.getElementById('admin-btn-text').innerText = "Entrance";
+            showView('home');
+        };
+
+        window.executePublish = async () => {
+            const title = document.getElementById('manuscript-title').value;
+            const content = document.getElementById('manuscript-content').value;
+            const category = document.getElementById('manuscript-category').value;
+            const author = document.getElementById('manuscript-author').value;
+            if (!title || !content || !category || !author) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), {
+                title, content, category, author,
+                timestamp: Date.now(),
+                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+            });
+            document.getElementById('publish-success').classList.add('show');
+        };
+
+        window.resetVault = () => {
+            document.getElementById('manuscript-title').value = "";
+            document.getElementById('manuscript-content').value = "";
+            document.getElementById('publish-success').classList.remove('show');
+        };
+
+        window.renderPublications = () => {
+            const list = document.getElementById('publications-list');
+            const filtered = activeCategory === "All" ? manuscripts : manuscripts.filter(m => m.category === activeCategory);
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="py-24 text-center opacity-30 font-serif italic text-xl">The vault is currently empty.</div>`;
+                return;
+            }
+
+            list.innerHTML = filtered.map(m => `
+                <div class="manuscript-box bg-current-alpha border-current-alpha view-transition">
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-50">${m.category} / ${m.date}</span>
+                        ${isAuthenticated ? `<button onclick="deleteManuscript('${m.id}')" class="text-red-800 text-[9px] font-bold uppercase tracking-widest opacity-60 hover:opacity-100">Rescind</button>` : ''}
+                    </div>
+                    <h2 class="text-3xl font-serif italic mb-4 leading-tight">${m.title}</h2>
+                    <p class="text-sm opacity-50 font-serif italic mb-8 border-b border-current-alpha inline-block pb-1">Woven by ${m.author}</p>
+                    <div class="font-serif text-lg leading-relaxed opacity-80 whitespace-pre-wrap">${m.content}</div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        window.deleteManuscript = async (id) => {
+            if (isAuthenticated) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id));
         };
 
         window.setCategoryFilter = (cat) => {
@@ -350,180 +337,31 @@
             renderPublications();
         };
 
-        window.handleLogin = () => {
-            if (document.getElementById('passcode-input').value === '98987') {
-                isAuthenticated = true;
-                document.getElementById('admin-btn-text').innerText = "Dashboard";
-                document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'layout');
-                showView('dashboard');
-                resetVault();
-            } else {
-                document.getElementById('login-error').classList.remove('hide');
-            }
-        };
-
-        window.logout = () => {
-            isAuthenticated = false;
-            document.getElementById('admin-btn-text').innerText = "Author Entrance";
-            document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'key');
-            showView('home');
-        };
-
-        window.executePublish = async () => {
-            if (!user) return;
-            const title = document.getElementById('manuscript-title').value;
-            const content = document.getElementById('manuscript-content').value;
-            const category = document.getElementById('manuscript-category').value;
-            const author = document.getElementById('manuscript-author').value;
-
-            if (!title || !content || !category || !author) {
-                const btn = document.getElementById('publish-btn');
-                btn.innerText = "Incomplete Thread";
-                setTimeout(() => btn.innerText = "Secure to Vault", 2000);
-                return;
-            }
-
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), {
-                    title, content, category, author,
-                    likes: 0,
-                    comments: [],
-                    timestamp: Date.now(),
-                    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-                });
-                document.getElementById('publish-success').classList.add('show');
-                lucide.createIcons();
-            } catch (e) { console.error("Publish failed", e); }
-        };
-
-        window.toggleLike = async (id) => {
-            if (!user) return;
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id);
-            await updateDoc(docRef, { likes: increment(1) });
-        };
-
-        window.addComment = async (id) => {
-            if (!user) return;
-            const input = document.getElementById(`comment-input-${id}`);
-            const text = input.value.trim();
-            if (!text) return;
-            
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id);
-            await updateDoc(docRef, {
-                comments: arrayUnion({
-                    id: Date.now(),
-                    text,
-                    date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                })
-            });
-            input.value = "";
-        };
-
-        window.deleteManuscript = async (id) => {
-            if (!isAuthenticated || !user) return;
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id));
-        };
-
-        window.renderPublications = () => {
-            const container = document.getElementById('publications-list');
-            const filtered = activeCategory === "All" ? manuscripts : manuscripts.filter(m => m.category === activeCategory);
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="py-40 text-center opacity-30 font-serif italic text-xl">No manuscripts found in the digital vault.</div>`;
-                return;
-            }
-
-            container.innerHTML = filtered.map(m => `
-                <article class="manuscript-box bg-current-alpha border-current-alpha view-transition overflow-hidden">
-                    <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
-                        <div class="flex items-center gap-3">
-                            <span class="px-3 py-1 border border-current-alpha rounded-full text-[9px] uppercase tracking-[0.2em] font-bold opacity-60">${m.category}</span>
-                            <span class="text-[9px] uppercase tracking-[0.3em] opacity-40 font-bold">${m.date}</span>
-                        </div>
-                        ${isAuthenticated ? `<button onclick="deleteManuscript('${m.id}')" class="text-[9px] uppercase font-bold tracking-widest text-red-800 opacity-60 hover:opacity-100 flex items-center gap-2 transition-opacity"><i data-lucide="trash-2" class="w-3"></i> Rescind Manuscript</button>` : ''}
-                    </div>
-                    
-                    <div class="mb-4 flex items-center gap-2 opacity-50">
-                        <span class="text-[10px] uppercase font-bold tracking-[0.1em]">Woven By</span>
-                        <span class="text-sm font-serif italic border-b border-current-alpha">${m.author}</span>
-                    </div>
-
-                    <h2 class="text-3xl font-serif italic mb-6 leading-tight">${m.title}</h2>
-                    <div class="font-serif text-lg leading-relaxed opacity-80 whitespace-pre-wrap mb-10">${m.content}</div>
-                    
-                    <div class="border-t border-current-alpha pt-6 flex items-center gap-8">
-                        <button onclick="toggleLike('${m.id}')" class="interaction-btn">
-                            <i data-lucide="heart" class="w-4"></i>
-                            <span>${m.likes || 0} Likes</span>
-                        </button>
-                        <div class="interaction-btn">
-                            <i data-lucide="message-circle" class="w-4"></i>
-                            <span>${m.comments ? m.comments.length : 0} Threads</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-8">
-                        <div class="flex gap-4 mb-6">
-                            <input type="text" id="comment-input-${m.id}" placeholder="Add to the thread..." class="flex-1 text-sm border-b border-current-alpha py-2 italic font-serif opacity-70">
-                            <button onclick="addComment('${m.id}')" class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-40 hover:opacity-100">Woven</button>
-                        </div>
-                        <div class="space-y-4">
-                            ${(m.comments || []).map(c => `
-                                <div class="comment-item text-sm opacity-60">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="text-[8px] uppercase font-bold tracking-widest">Anonymous</span>
-                                        <span class="text-[8px] opacity-60">${c.date}</span>
-                                    </div>
-                                    <p class="font-serif italic">${c.text}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </article>
+        window.renderFilters = () => {
+            const cats = ["All", "Philosophy", "History", "Psychology", "Current Affairs", "Literature"];
+            document.getElementById('category-filters').innerHTML = cats.map(c => `
+                <button onclick="setCategoryFilter('${c}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest ${activeCategory === c ? 'active-filter' : 'opacity-40 hover:opacity-100'}">${c}</button>
             `).join('');
-            lucide.createIcons();
-        };
-
-        window.resetVault = () => {
-            document.getElementById('manuscript-title').value = "";
-            document.getElementById('manuscript-content').value = "";
-            document.getElementById('manuscript-category').value = "";
-            document.getElementById('manuscript-author').value = "";
-            document.getElementById('publish-success').classList.remove('show');
-            document.getElementById('publish-btn').innerText = "Secure to Vault";
         };
 
         window.toggleDarkMode = () => {
-            darkMode = !darkMode;
             const body = document.getElementById('body');
-            body.classList.toggle('light-mode', !darkMode);
-            body.classList.toggle('dark-mode', darkMode);
-            document.getElementById('theme-toggle').innerHTML = darkMode ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
+            const isDark = body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode', !isDark);
+            document.getElementById('theme-toggle').innerHTML = isDark ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
             lucide.createIcons();
         };
 
-        window.renderFilters = () => {
-            const filters = ["All", ...CATEGORIES];
-            document.getElementById('category-filters').innerHTML = filters.map(cat => `
-                <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 ${activeCategory === cat ? 'active-filter' : ''}">${cat}</button>
-            `).join('');
-        };
+        // Inject Collective Members
+        document.getElementById('authors-grid').innerHTML = AUTHORS_LIST.map(a => `
+            <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
+                <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
+                <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
+            </div>
+        `).join('');
 
-        window.renderAuthors = () => {
-            document.getElementById('authors-grid').innerHTML = AUTHORS_LIST.map(a => `
-                <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
-                    <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
-                    <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
-                </div>
-            `).join('');
-        };
-
-        // Run
-        initAuth();
-        renderAuthors();
         renderFilters();
         lucide.createIcons();
     </script>
 </body>
 </html>
-
