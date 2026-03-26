@@ -6,7 +6,6 @@
 <title>We Weave Words | A Closed Collective</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
 <style>
 :root { 
@@ -281,17 +280,12 @@ Secure to Vault
 </footer>
 
 <script>
-// SUPABASE CONFIGURATION - Replace with your own project details
-const supabaseUrl = 'https://kvoxbfynuqxmdljjomad.supabase.co';
-const supabaseKey = 'sb_publishable_tTNxFRRnPuVWLF6oRHxUlQ_UVd7GJhV';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 const AUTHORS_LIST = [
-    { name: "Saar Tokas", bio: "A High School student who enjoys exploring topics like history, civics, and global issues." },
-    { name: "Guransh Khattar", bio: "A High School student with a strong interest in learning and personal growth." },
-    { name: "Diva Arora", bio: "A High School student. Exploring perspectives through expression." },
-    { name: "Shrre", bio: "A High-School Student of Humanities and an aspiring author. Decodes the depths of humanity." },
-    { name: "Ishita Shah", bio: "Interrogating perspectives through language, drawn to the nuanced juxtaposition of the ephemeral and the enduring." }
+{ name: "Saar Tokas", bio: "A High School student who enjoys exploring topics like history, civics, and global issues. Writes simple and engaging articles for people to help them understand and stay informed about the world." },
+{ name: "Guransh Khattar", bio: "A High School student with a strong interest in learning and personal growth. Enjoys exploring different subjects and developing self thinking skills. Focuses on clear, structured learning and constantly work on improving oneself." },
+{ name: "Diva Arora", bio: "A High School student. Exploring perspectives through expression. Writes to transform everyday moments into evocative pieces." },
+{ name: "Shrre", bio: "A High-School Student of Humanities and an aspiring author. Navigating the shadows of Criminology and the light of Philosophy to decode the depths of humanity. Strives to thread crime and philosophy into the realms of human nature." },
+{ name: "Ishita Shah", bio: "Interrogating perspectives through language, drawn to the nuanced juxtaposition of the ephemeral and the enduring. Writes to transmute the quotidian into something contemplative, where expression becomes both inquiry and meaning." }
 ];
 
 const CATEGORIES = ["Philosophy", "History", "Psychology", "Current Affairs", "Literature"];
@@ -300,172 +294,216 @@ let isAuthenticated = false;
 let activeCategory = "All";
 let manuscripts = [];
 
-async function init() { 
-    lucide.createIcons(); 
-    renderAuthors(); 
-    renderFilters(); 
-    await fetchManuscripts(); // Get real data from Supabase
-}
-
-async function fetchManuscripts() {
-    const { data, error } = await supabase
-        .from('manuscripts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error("Error fetching vault:", error);
-    } else {
-        manuscripts = data || [];
-        renderPublications();
-    }
-}
-
-function renderPublications() {
-    const container = document.getElementById('publications-list');
-    const filtered = activeCategory === "All" ? manuscripts : manuscripts.filter(m => m.category === activeCategory);
-
-    if (filtered.length === 0) {
-        container.innerHTML = `<div class="py-40 text-center opacity-30 font-serif italic text-xl">No manuscripts found in the digital vault.</div>`;
-        return;
-    }
-
-    container.innerHTML = filtered.map(m => `
-        <article class="manuscript-box bg-current-alpha border-current-alpha view-transition overflow-hidden">
-            <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
-                <div class="flex items-center gap-3">
-                    <span class="px-3 py-1 border border-current-alpha rounded-full text-[9px] uppercase tracking-[0.2em] font-bold opacity-60">${m.category}</span>
-                    <span class="text-[9px] uppercase tracking-[0.3em] opacity-40 font-bold">${new Date(m.created_at).toLocaleDateString()}</span>
-                </div>
-                ${isAuthenticated ? `<button onclick="deleteManuscript('${m.id}')" class="text-[9px] uppercase font-bold tracking-widest text-red-800 opacity-60 hover:opacity-100 flex items-center gap-2 transition-opacity"><i data-lucide="trash-2" class="w-3"></i> Rescind Manuscript</button>` : ''}
-            </div>
-            <div class="mb-4 flex items-center gap-2 opacity-50">
-                <span class="text-[10px] uppercase font-bold tracking-[0.1em]">Woven By</span>
-                <span class="text-sm font-serif italic border-b border-current-alpha">${m.author}</span>
-            </div>
-            <h2 class="text-3xl font-serif italic mb-6 leading-tight">${m.title}</h2>
-            <div class="font-serif text-lg leading-relaxed opacity-80 whitespace-pre-wrap mb-10">${m.content}</div>
-        </article>
-    `).join('');
-    lucide.createIcons();
-}
-
-async function executePublish() {
-    const title = document.getElementById('manuscript-title').value;
-    const content = document.getElementById('manuscript-content').value;
-    const category = document.getElementById('manuscript-category').value;
-    const author = document.getElementById('manuscript-author').value;
-
-    if (!title || !content || !category || !author) {
-        const btn = document.getElementById('publish-btn');
-        btn.innerText = "Incomplete Thread";
-        setTimeout(() => btn.innerText = "Secure to Vault", 2000);
-        return;
-    }
-
-    document.getElementById('publish-btn').innerText = "Weaving...";
-
-    const { data, error } = await supabase
-        .from('manuscripts')
-        .insert([{ title, content, category, author }]);
-
-    if (error) {
-        alert("Error securing to vault: " + error.message);
-        document.getElementById('publish-btn').innerText = "Secure to Vault";
-    } else {
-        document.getElementById('publish-success').classList.add('show');
-        await fetchManuscripts();
-    }
-}
-
-async function deleteManuscript(id) {
-    if (!confirm("Are you sure you want to rescind this manuscript from the archive?")) return;
-    
-    const { error } = await supabase
-        .from('manuscripts')
-        .delete()
-        .eq('id', id);
-
-    if (error) {
-        alert("Error rescinding manuscript");
-    } else {
-        await fetchManuscripts();
-    }
+function init() { 
+lucide.createIcons(); 
+renderAuthors(); 
+renderFilters(); 
+renderPublications();
 }
 
 function showView(viewId) {
-    if (viewId === 'dashboard' && !isAuthenticated) { showView('admin'); return; }
-    document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
-    document.getElementById(`view-${viewId}`).classList.remove('hide');
-    document.querySelectorAll('.nav-item').forEach(link => {
-        const isActive = link.id === `nav-${viewId}`;
-        link.classList.toggle('opacity-100', isActive);
-        link.classList.toggle('opacity-40', !isActive);
-    });
-    window.scrollTo(0, 0);
-    lucide.createIcons();
-}
+if (viewId === 'dashboard' && !isAuthenticated) { showView('admin'); return; }
+document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
+document.getElementById(`view-${viewId}`).classList.remove('hide');
 
-function handleLogin() {
-    if (document.getElementById('passcode-input').value === '98987') {
-        isAuthenticated = true;
-        document.getElementById('admin-btn-text').innerText = "Dashboard";
-        document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'layout');
-        showView('dashboard');
-        resetVault();
-    } else {
-        document.getElementById('login-error').classList.remove('hide');
-    }
-}
+document.querySelectorAll('.nav-item').forEach(link => {
+const isActive = link.id === `nav-${viewId}`;
+link.classList.toggle('opacity-100', isActive);
+link.classList.toggle('opacity-40', !isActive);
+});
 
-function logout() {
-    isAuthenticated = false;
-    document.getElementById('admin-btn-text').innerText = "Author Entrance";
-    document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'key');
-    showView('home');
-}
-
-function toggleDarkMode() {
-    darkMode = !darkMode;
-    const body = document.getElementById('body');
-    body.classList.toggle('light-mode', !darkMode);
-    body.classList.toggle('dark-mode', darkMode);
-    document.getElementById('theme-toggle').innerHTML = darkMode ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
-    lucide.createIcons();
+if (viewId === 'publications') renderPublications();
+window.scrollTo(0, 0);
+lucide.createIcons();
 }
 
 function setCategoryFilter(cat) {
-    activeCategory = cat;
-    renderFilters();
-    renderPublications();
+activeCategory = cat;
+renderFilters();
+renderPublications();
 }
 
-function renderFilters() {
-    const filters = ["All", ...CATEGORIES];
-    document.getElementById('category-filters').innerHTML = filters.map(cat => `
-        <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 ${activeCategory === cat ? 'active-filter' : ''}">${cat}</button>
-    `).join('');
+function handleLogin() {
+if (document.getElementById('passcode-input').value === '98987') {
+isAuthenticated = true;
+document.getElementById('admin-btn-text').innerText = "Dashboard";
+document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'layout');
+showView('dashboard');
+resetVault();
+} else {
+document.getElementById('login-error').classList.remove('hide');
+}
 }
 
-function renderAuthors() {
-    document.getElementById('authors-grid').innerHTML = AUTHORS_LIST.map(a => `
-        <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
-            <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
-            <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
-        </div>
-    `).join('');
+function logout() {
+isAuthenticated = false;
+document.getElementById('admin-btn-text').innerText = "Author Entrance";
+document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'key');
+showView('home');
+}
+
+function executePublish() {
+const title = document.getElementById('manuscript-title').value;
+const content = document.getElementById('manuscript-content').value;
+const category = document.getElementById('manuscript-category').value;
+const author = document.getElementById('manuscript-author').value;
+
+if (!title || !content || !category || !author) {
+const btn = document.getElementById('publish-btn');
+btn.innerText = "Incomplete Thread";
+setTimeout(() => btn.innerText = "Secure to Vault", 2000);
+return;
+}
+
+const newManuscript = {
+id: Date.now(),
+title,
+content,
+category,
+author,
+likes: 0,
+likedByMe: false,
+comments: [],
+date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+};
+
+manuscripts.unshift(newManuscript);
+document.getElementById('publish-btn').innerText = "Weaving...";
+setTimeout(() => {
+document.getElementById('publish-success').classList.add('show');
+lucide.createIcons();
+}, 1000);
+}
+
+function toggleLike(id) {
+const ms = manuscripts.find(m => m.id === id);
+if (ms) {
+ms.likedByMe = !ms.likedByMe;
+ms.likes += ms.likedByMe ? 1 : -1;
+renderPublications();
+}
+}
+
+function addComment(id) {
+const input = document.getElementById(`comment-input-${id}`);
+const text = input.value.trim();
+if (!text) return;
+
+const ms = manuscripts.find(m => m.id === id);
+if (ms) {
+ms.comments.push({
+id: Date.now(),
+text: text,
+date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+});
+input.value = "";
+renderPublications();
+}
+}
+
+function deleteManuscript(id) {
+if (!isAuthenticated) return;
+manuscripts = manuscripts.filter(m => m.id !== id);
+renderPublications();
+}
+
+function renderPublications() {
+const container = document.getElementById('publications-list');
+const filtered = activeCategory === "All" ? manuscripts : manuscripts.filter(m => m.category === activeCategory);
+
+if (filtered.length === 0) {
+container.innerHTML = `<div class="py-40 text-center opacity-30 font-serif italic text-xl">No manuscripts found in the digital vault.</div>`;
+return;
+}
+
+container.innerHTML = filtered.map(m => `
+               <article class="manuscript-box bg-current-alpha border-current-alpha view-transition overflow-hidden">
+                   <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
+                       <div class="flex items-center gap-3">
+                           <span class="px-3 py-1 border border-current-alpha rounded-full text-[9px] uppercase tracking-[0.2em] font-bold opacity-60">${m.category}</span>
+                           <span class="text-[9px] uppercase tracking-[0.3em] opacity-40 font-bold">${m.date}</span>
+                       </div>
+                       ${isAuthenticated ? `<button onclick="deleteManuscript(${m.id})" class="text-[9px] uppercase font-bold tracking-widest text-red-800 opacity-60 hover:opacity-100 flex items-center gap-2 transition-opacity"><i data-lucide="trash-2" class="w-3"></i> Rescind Manuscript</button>` : ''}
+                   </div>
+                   
+                   <!-- Author Attribution -->
+                   <div class="mb-4 flex items-center gap-2 opacity-50">
+                       <span class="text-[10px] uppercase font-bold tracking-[0.1em]">Woven By</span>
+                       <span class="text-sm font-serif italic border-b border-current-alpha">${m.author}</span>
+                   </div>
+
+                   <h2 class="text-3xl font-serif italic mb-6 leading-tight">${m.title}</h2>
+                   <div class="font-serif text-lg leading-relaxed opacity-80 whitespace-pre-wrap mb-10">${m.content}</div>
+                   
+                   <div class="border-t border-current-alpha pt-6 flex items-center gap-8">
+                       <button onclick="toggleLike(${m.id})" class="interaction-btn ${m.likedByMe ? 'liked' : ''}">
+                           <i data-lucide="heart" class="w-4 ${m.likedByMe ? 'fill-current' : ''}"></i>
+                           <span>${m.likes} Likes</span>
+                       </button>
+                       <div class="interaction-btn">
+                           <i data-lucide="message-circle" class="w-4"></i>
+                           <span>${m.comments.length} Threads</span>
+                       </div>
+                   </div>
+
+                   <div class="mt-8">
+                       <div class="flex gap-4 mb-6">
+                           <input type="text" id="comment-input-${m.id}" placeholder="Add to the thread..." class="flex-1 text-sm border-b border-current-alpha py-2 italic font-serif opacity-70">
+                           <button onclick="addComment(${m.id})" class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-40 hover:opacity-100">Woven</button>
+                       </div>
+                       <div class="space-y-4">
+                           ${m.comments.map(c => `
+                               <div class="comment-item text-sm opacity-60">
+                                   <div class="flex justify-between items-center mb-1">
+                                       <span class="text-[8px] uppercase font-bold tracking-widest">Anonymous</span>
+                                       <span class="text-[8px] opacity-60">${c.date}</span>
+                                   </div>
+                                   <p class="font-serif italic">${c.text}</p>
+                               </div>
+                           `).join('')}
+                       </div>
+                   </div>
+               </article>
+           `).join('');
+lucide.createIcons();
 }
 
 function resetVault() {
-    document.getElementById('manuscript-title').value = "";
-    document.getElementById('manuscript-content').value = "";
-    document.getElementById('manuscript-category').value = "";
-    document.getElementById('manuscript-author').value = "";
-    document.getElementById('publish-success').classList.remove('show');
-    document.getElementById('publish-btn').innerText = "Secure to Vault";
+document.getElementById('manuscript-title').value = "";
+document.getElementById('manuscript-content').value = "";
+document.getElementById('manuscript-category').value = "";
+document.getElementById('manuscript-author').value = "";
+document.getElementById('publish-success').classList.remove('show');
+document.getElementById('publish-btn').innerText = "Secure to Vault";
 }
 
-window.onload = init;
-</script>
+function toggleDarkMode() {
+darkMode = !darkMode;
+const body = document.getElementById('body');
+body.classList.toggle('light-mode', !darkMode);
+body.classList.toggle('dark-mode', darkMode);
+document.getElementById('theme-toggle').innerHTML = darkMode ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
+lucide.createIcons();
+}
+
+function renderFilters() {
+const filters = ["All", ...CATEGORIES];
+document.getElementById('category-filters').innerHTML = filters.map(cat => `
+                <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 $
+                <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 ${activeCategory === cat ? 'active-filter' : ''}">${cat}</button>
+            `).join('');
+        }
+
+        function renderAuthors() {
+            document.getElementById('authors-grid').innerHTML = AUTHORS_LIST.map(a => `
+                <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
+                    <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
+                    <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
+                </div>
+            `).join('');
+        }
+
+        window.onload = init;
+    </script>
 </body>
 </html>
