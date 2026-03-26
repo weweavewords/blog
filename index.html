@@ -1,363 +1,509 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>We Weave Words | A Closed Collective</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <style>
-        :root { 
-            --light-bg: #f3ebe0; 
-            --light-primary: #550000;
-            --dark-bg: #0a0a0a; 
-            --dark-text: #f3ebe0;
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            transition: background-color 0.4s ease, color 0.4s ease; 
-            overflow-x: hidden;
-            background-color: var(--light-bg);
-            color: var(--light-primary);
-            -webkit-font-smoothing: antialiased;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We Weave Words | A Closed Collective</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<style>
+:root { 
+--light-bg: #f3ebe0; 
+--light-text: #550000; 
+--dark-bg: #000000; 
+--dark-text: #f3ebe0;
+}
 
-        body.light-mode { background-color: var(--light-bg); color: var(--light-primary); }
-        body.dark-mode { background-color: var(--dark-bg); color: var(--dark-text); }
+body { 
+font-family: 'Inter', sans-serif; 
+transition: background-color 0.5s ease, color 0.5s ease; 
+overflow-x: hidden; 
+}
 
-        .font-serif { font-family: 'Crimson Pro', serif; }
-        .hide { display: none !important; }
-        
-        /* Fixed Header */
-        .glass { 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px);
-            background-color: rgba(243, 235, 224, 0.95);
-            border-bottom: 1px solid rgba(85, 0, 0, 0.2);
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 4.5rem;
-        }
-        body.dark-mode .glass { 
-            background-color: rgba(10, 10, 10, 0.95);
-            border-bottom: 1px solid rgba(243, 235, 224, 0.15); 
-        }
+/* Mode Styles */
+body.light-mode { background-color: var(--light-bg); color: var(--light-text); }
+body.light-mode .glass { background-color: rgba(243, 235, 224, 0.85); border-bottom-color: rgba(85, 0, 0, 0.1); }
+body.light-mode .btn-primary { background-color: var(--light-text); color: var(--light-bg); }
+body.light-mode .border-current-alpha { border-color: rgba(85, 0, 0, 0.15); }
+body.light-mode .bg-current-alpha { background-color: rgba(85, 0, 0, 0.03); }
 
-        /* Buttons & Contrast */
-        .btn-primary { 
-            background-color: var(--light-primary); 
-            color: var(--light-bg); 
-            font-weight: 700;
-        }
-        body.dark-mode .btn-primary { 
-            background-color: var(--dark-text); 
-            color: var(--dark-bg); 
-        }
-        
-        .view-transition { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Navigation Links - Higher Opacity for Visibility */
-        .nav-link { opacity: 0.7; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; }
-        .nav-link:hover { opacity: 1; }
-        .nav-link.active { opacity: 1; position: relative; }
-        .nav-link.active::after {
-            content: ''; position: absolute; bottom: 4px; left: 12px; right: 12px; height: 2px; background: currentColor;
-        }
+body.dark-mode { background-color: var(--dark-bg); color: var(--dark-text); }
+body.dark-mode .glass { background-color: rgba(0, 0, 0, 0.85); border-bottom-color: rgba(243, 235, 224, 0.1); }
+body.dark-mode .btn-primary { background-color: var(--dark-text); color: var(--dark-bg); }
+body.dark-mode .border-current-alpha { border-color: rgba(243, 235, 224, 0.15); }
+body.dark-mode .bg-current-alpha { background-color: rgba(243, 235, 224, 0.05); }
 
-        .manuscript-box { 
-            border: 1.5px solid currentColor; 
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            margin-bottom: 3rem;
-            background-color: rgba(85, 0, 0, 0.03);
-        }
-        
-        /* Fixed the low opacity text from the screenshots */
-        .text-body { opacity: 0.95 !important; }
-        .text-dim { opacity: 0.7 !important; }
+.font-serif { font-family: 'Crimson Pro', serif; }
+.hide { display: none !important; }
+.glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.view-transition { animation: fadeIn 0.6s ease forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        input, textarea, select {
-            background: transparent !important;
-            border-bottom: 1px solid currentColor !important;
-            border-radius: 0 !important;
-            color: inherit !important;
-        }
-    </style>
+input, textarea, select { outline: none; background: transparent !important; color: inherit; }
+select option { background: var(--light-bg); color: var(--light-text); }
+body.dark-mode select option { background: var(--dark-bg); color: var(--dark-text); }
+
+.nav-item { transition: opacity 0.3s ease; cursor: pointer; }
+
+#publish-success { 
+position: absolute;
+inset: 0;
+z-index: 20;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 2.5rem;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.4s ease;
+}
+body.light-mode #publish-success { background-color: var(--light-bg); }
+body.dark-mode #publish-success { background-color: var(--dark-bg); }
+#publish-success.show { opacity: 1; pointer-events: auto; }
+
+.manuscript-box { 
+border: 1px solid currentColor; 
+border-radius: 1.5rem;
+padding: 2.5rem;
+margin-bottom: 2rem;
+transition: all 0.3s ease;
+}
+
+.active-filter { opacity: 1 !important; border-bottom: 2px solid currentColor; }
+
+.interaction-btn { 
+display: flex; 
+align-items: center; 
+gap: 0.5rem; 
+font-size: 11px; 
+text-transform: uppercase; 
+letter-spacing: 0.1em; 
+font-weight: 700;
+opacity: 0.4;
+transition: opacity 0.2s ease;
+}
+.interaction-btn:hover { opacity: 1; }
+.liked { color: #cc0000; opacity: 1; }
+
+.comment-item { border-top: 1px solid rgba(128,128,128,0.1); padding-top: 1rem; margin-top: 1rem; }
+</style>
 </head>
 <body class="light-mode" id="body">
 
-    <!-- NAVIGATION WITH INLINE SVGS -->
-    <nav class="glass px-4">
-        <div class="max-w-7xl mx-auto h-full flex items-center justify-between">
-            <div class="text-lg md:text-xl font-serif font-bold cursor-pointer" onclick="showView('home')">
-                We Weave Words
-            </div>
-            
-            <div class="flex items-center space-x-1 md:space-x-4">
-                <div class="flex items-center">
-                    <!-- Archive Icon (Book) -->
-                    <div id="nav-publications" class="nav-link" onclick="showView('publications')" title="Archives">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    </div>
-                    <!-- Collective Icon (Users) -->
-                    <div id="nav-about" class="nav-link" onclick="showView('about')" title="Collective">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    </div>
-                </div>
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 transition-all duration-500 border-b glass h-16" id="navbar">
+<div class="max-w-7xl mx-auto px-4 md:px-6 h-full flex items-center justify-between">
+<div class="text-lg md:text-xl font-serif font-bold tracking-tight cursor-pointer hover:opacity-70 transition-opacity" onclick="showView('home')">
+We Weave Words
+</div>
 
-                <div class="w-[1px] h-6 bg-current opacity-20 mx-1"></div>
+<div class="flex items-center space-x-3 md:space-x-10">
+<div class="flex items-center space-x-4 md:space-x-8 text-sm font-medium tracking-wide">
+<button onclick="showView('publications')" class="nav-item opacity-40 hover:opacity-100 flex items-center" id="nav-publications">
+<span class="hidden md:inline">Publications</span>
+<i data-lucide="book-open" class="w-5 md:hidden"></i>
+</button>
+<button onclick="showView('about')" class="nav-item opacity-40 hover:opacity-100 flex items-center" id="nav-about">
+<span class="hidden md:inline">Collective</span>
+<i data-lucide="users" class="w-5 md:hidden"></i>
+</button>
+</div>
 
-                <!-- Dark Mode Toggle Icon -->
-                <button onclick="toggleDarkMode()" class="w-10 h-10 flex items-center justify-center nav-link">
-                    <svg id="theme-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
+<div class="flex items-center space-x-2 md:space-x-4 border-l border-current-alpha pl-3 md:pl-10">
+<button onclick="toggleDarkMode()" class="opacity-40 hover:opacity-100 transition-opacity p-1" id="theme-toggle">
+<i data-lucide="moon" class="w-[18px]"></i>
+</button>
+<button id="admin-nav-btn" onclick="showView('admin')" class="btn-primary px-3 py-2 md:px-5 md:py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+<span class="hidden sm:inline" id="admin-btn-text">Author Entrance</span>
+<i data-lucide="key" class="w-3 sm:hidden" id="admin-btn-icon"></i>
+</button>
+</div>
+</div>
+</div>
+</nav>
 
-                <button onclick="showView('admin')" class="btn-primary px-4 py-2 rounded-full text-[10px] uppercase tracking-widest ml-1 shadow-md">
-                    <span id="admin-btn-text">Entrance</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+<main class="pt-16 min-h-screen">
+<!-- Home View -->
+<section id="view-home" class="view view-transition">
+<!-- Hero -->
+<div class="h-[70vh] flex flex-col items-center justify-center text-center px-6 relative">
+<h1 class="text-5xl md:text-8xl font-serif font-light mb-6 tracking-tight">We Weave <span class="italic font-medium">Words</span></h1>
+<p class="text-lg md:text-2xl font-light opacity-60 max-w-2xl font-serif">Where thought dissolves into language.</p>
+<button onclick="showView('publications')" class="mt-12 group flex items-center gap-3 px-10 py-4 btn-primary rounded-full hover:scale-105 transition-all text-[10px] font-bold uppercase tracking-widest">
+Explore Archives <i data-lucide="arrow-right" class="w-3.5 group-hover:translate-x-1 transition-transform"></i>
+</button>
+</div>
 
-    <main class="pt-20 min-h-screen">
-        <!-- Home -->
-        <section id="view-home" class="view view-transition px-6 py-20">
-            <div class="max-w-4xl mx-auto text-center py-20 md:py-32">
-                <h1 class="text-6xl md:text-9xl font-serif font-light mb-8">We Weave <span class="italic font-medium">Words</span></h1>
-                <p class="text-xl md:text-2xl font-serif italic text-dim">Where thought dissolves into language.</p>
-                <button onclick="showView('publications')" class="mt-14 px-12 py-5 btn-primary rounded-full text-[11px] uppercase tracking-widest">
-                    Explore Archives
-                </button>
-            </div>
+<!-- Our Purpose Section -->
+<div class="max-w-4xl mx-auto px-6 py-24 border-t border-current-alpha">
+<h2 class="text-3xl md:text-5xl font-serif italic mb-10">Our Purpose</h2>
+<div class="space-y-8 text-xl md:text-2xl font-serif leading-relaxed opacity-70">
+<p>We Weave Words is a sanctuary for deliberate thought. In an age of instant reactions, we choose the slow labor of weaving—taking complex threads of history, philosophy, and human nature and tying them into cohesive reflections.</p>
+<p>This platform serves as a digital vault for six distinct voices. We invite you to explore our archives not as a source of quick information, but as a space for contemplative engagement.</p>
+</div>
+</div>
 
-            <div class="max-w-3xl mx-auto py-24 border-t border-current border-opacity-20">
-                <h2 class="text-4xl font-serif italic mb-10">Our Purpose</h2>
-                <div class="space-y-8 text-xl font-serif leading-relaxed text-body">
-                    <p>We Weave Words is a sanctuary for deliberate thought. In an age of instant reactions, we choose the slow labor of weaving—taking complex threads of history, philosophy, and human nature and tying them into cohesive reflections.</p>
-                    <p>This platform serves as a digital vault for six distinct voices. We invite you to explore our archives not as a source of quick information, but as a space for contemplative engagement.</p>
-                </div>
-            </div>
-        </section>
+<!-- Core Principles Section -->
+<div class="max-w-4xl mx-auto px-6 pb-32">
+<h2 class="text-3xl md:text-5xl font-serif italic mb-16">Core Principles</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="space-y-4">
+<span class="font-serif italic text-4xl opacity-20">01</span>
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50">Preservation</h4>
+<p class="font-serif italic text-lg opacity-80">To safeguard intellectual curiosity against the erosion of modern brevity.</p>
+</div>
+<div class="space-y-4">
+<span class="font-serif italic text-4xl opacity-20">02</span>
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50">Dialogue</h4>
+<p class="font-serif italic text-lg opacity-80">To create a bridge between student inquiry and global understanding.</p>
+</div>
+<div class="space-y-4">
+<span class="font-serif italic text-4xl opacity-20">03</span>
+<h4 class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50">Nuance</h4>
+<p class="font-serif italic text-lg opacity-80">To honor the gray areas where most of the world's truths are hidden.</p>
+</div>
+</div>
+</div>
+</section>
 
-        <!-- Archives -->
-        <section id="view-publications" class="view hide max-w-5xl mx-auto px-6 py-20">
-            <h1 class="text-5xl md:text-7xl font-serif mb-12">The Archives</h1>
-            <div class="flex flex-wrap gap-4 mb-14 border-b border-current border-opacity-20 pb-8" id="category-filters"></div>
-            <div id="publications-list" class="space-y-16"></div>
-        </section>
+<!-- Publications View -->
+<section id="view-publications" class="view hide max-w-5xl mx-auto px-6 py-24">
+<h1 class="text-5xl md:text-6xl font-serif mb-12">The Archives</h1>
+<div class="flex flex-wrap gap-3 mb-12 border-b border-current-alpha pb-10" id="category-filters"></div>
 
-        <!-- Collective -->
-        <section id="view-about" class="view hide max-w-7xl mx-auto px-6 py-20">
-            <h1 class="text-5xl md:text-7xl font-serif mb-20">The Collective</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-24 gap-x-12 mb-32" id="authors-grid"></div>
-            
-            <div class="border-t border-current border-opacity-20 pt-24 max-w-2xl">
-                <h4 class="text-[10px] font-bold uppercase tracking-[0.4em] mb-10 text-dim">Technical Infrastructure</h4>
-                <div class="group">
-                    <h3 class="text-4xl font-serif italic mb-4">Yashika Puri</h3>
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-dim mb-6 italic">Our Tech Expert</p>
-                    <p class="text-xl font-serif italic leading-relaxed text-body">A High School student, science student, and tech enthusiast who thrives on exploring new areas. Yashika ensures the digital loom remains steady, bridging the gap between intricate code and creative expression.</p>
-                </div>
-            </div>
-        </section>
+<div id="publications-list" class="space-y-12">
+<div class="py-40 text-center opacity-30 font-serif italic text-xl">
+No manuscripts found in the digital vault.
+</div>
+</div>
+</section>
 
-        <!-- Entrance -->
-        <section id="view-admin" class="view hide min-h-[70vh] flex flex-col items-center justify-center p-6">
-            <div class="max-w-sm w-full p-12 bg-white/5 border border-current/10 rounded-[2.5rem] text-center view-transition shadow-xl">
-                <h2 class="text-[11px] font-bold uppercase tracking-[0.4em] mb-12 text-dim">Security Protocol</h2>
-                <input type="password" id="passcode-input" placeholder="•••••" class="w-full py-4 text-center text-4xl tracking-widest font-serif focus:outline-none mb-12 border-b-2 border-current">
-                <button onclick="handleLogin()" class="w-full py-5 btn-primary rounded-2xl font-bold uppercase text-[11px] tracking-widest">Verify Entrance</button>
-            </div>
-        </section>
+<!-- Collective View -->
+<section id="view-about" class="view hide max-w-7xl mx-auto px-6 py-24">
+<div class="max-w-4xl mb-24">
+<h1 class="text-5xl md:text-7xl font-serif mb-8">The Collective</h1>
+<p class="text-2xl font-serif opacity-50 italic leading-relaxed">Six minds, one loom. Dedicated to the preservation of nuance.</p>
+</div>
 
-        <!-- Admin Vault -->
-        <section id="view-dashboard" class="view hide max-w-5xl mx-auto px-6 py-20">
-            <div class="flex justify-between items-center mb-12">
-                <h1 class="text-3xl font-serif italic">Manuscript Vault</h1>
-                <button onclick="logout()" class="text-[11px] font-bold uppercase border border-current px-4 py-2 rounded-lg">Resign</button>
-            </div>
-            <div class="p-8 border-2 border-current border-opacity-20 rounded-[2rem] relative">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-                    <div class="flex flex-col">
-                        <label class="text-[9px] uppercase font-bold mb-2 text-dim">Author</label>
-                        <select id="manuscript-author" class="py-4 font-serif italic focus:outline-none text-lg">
-                            <option value="" disabled selected>Identify...</option>
-                            <option value="Saar Tokas">Saar Tokas</option>
-                            <option value="Guransh Khattar">Guransh Khattar</option>
-                            <option value="Diva Arora">Diva Arora</option>
-                            <option value="Shrre">Shrre</option>
-                            <option value="Ishita Shah">Ishita Shah</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-[9px] uppercase font-bold mb-2 text-dim">Category</label>
-                        <select id="manuscript-category" class="py-4 font-serif italic focus:outline-none text-lg">
-                            <option value="" disabled selected>Choose...</option>
-                            <option value="Philosophy">Philosophy</option>
-                            <option value="History">History</option>
-                            <option value="Psychology">Psychology</option>
-                            <option value="Current Affairs">Current Affairs</option>
-                            <option value="Literature">Literature</option>
-                        </select>
-                    </div>
-                </div>
-                <input type="text" id="manuscript-title" placeholder="Manuscript Title..." class="w-full py-5 mb-10 text-3xl font-serif italic focus:outline-none">
-                <textarea id="manuscript-content" placeholder="Begin weaving your thoughts..." class="w-full py-5 mb-14 h-96 font-serif text-xl leading-relaxed focus:outline-none"></textarea>
-                <button onclick="executePublish()" class="px-14 py-5 btn-primary rounded-full text-[11px] font-bold uppercase tracking-widest">Secure Manuscript</button>
-                
-                <div id="publish-success" class="bg-white/95 dark:bg-black/95">
-                    <div class="text-center p-12">
-                        <h4 class="text-3xl font-serif italic mb-6">Manuscript Secured.</h4>
-                        <button onclick="resetVault()" class="text-[11px] font-bold uppercase border-b-2 border-current pb-2">New Weaving</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+<!-- Writers Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12 mb-40" id="authors-grid"></div>
 
-    <footer class="py-32 text-center border-t border-current border-opacity-10 mt-20 opacity-60">
-        <p class="text-[10px] uppercase tracking-[0.4em]">© 2026 We Weave Words · A Closed Collective</p>
-    </footer>
+<!-- Secluded Tech Specialist Section -->
+<div class="border-t border-current-alpha pt-24 max-w-2xl">
+<h4 class="text-[10px] font-bold uppercase tracking-[0.4em] opacity-30 mb-12">Technical Infrastructure</h4>
+<div class="group">
+<h3 class="text-3xl font-serif italic mb-4">Yashika Puri</h3>
+<p class="text-[11px] font-bold uppercase tracking-widest opacity-40 mb-4 italic">Our Tech Expert</p>
+<p class="text-lg opacity-60 font-serif italic leading-relaxed">A High School student, science student, and tech enthusiast who thrives on exploring new areas. Yashika ensures the digital loom remains steady, bridging the gap between intricate code and creative expression.</p>
+</div>
+</div>
+</section>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<!-- Login View -->
+<section id="view-admin" class="view hide min-h-[70vh] flex flex-col items-center justify-center p-6">
+<div class="max-w-md w-full p-12 rounded-[2.5rem] border border-current-alpha bg-current-alpha">
+<h2 class="text-xl font-serif text-center mb-10 tracking-widest uppercase opacity-60">Security Protocol</h2>
+<input type="password" id="passcode-input" placeholder="•••••" class="w-full p-5 rounded-2xl mb-6 bg-transparent border border-current-alpha text-center text-2xl tracking-[0.5em] text-inherit">
+<div id="login-error" class="text-[9px] uppercase font-bold text-center mb-6 hide">Incorrect Passkey.</div>
+<button onclick="handleLogin()" class="w-full py-5 btn-primary rounded-2xl font-bold uppercase text-[10px] tracking-[0.3em]">Authenticate</button>
+</div>
+</section>
 
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'we-weave-words-master';
+<!-- Dashboard View -->
+<section id="view-dashboard" class="view hide max-w-7xl mx-auto px-6 py-24">
+<div class="flex justify-between items-end mb-16">
+<div>
+<h1 class="text-4xl font-serif mb-2">The Manuscript Vault</h1>
+<p class="opacity-50 text-sm uppercase tracking-widest">Privileged Access Granted</p>
+</div>
+<button onclick="logout()" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100">
+<i data-lucide="log-out" class="w-3"></i> Sign Out
+</button>
+</div>
 
-        const AUTHORS = [
-            { name: "Saar Tokas", bio: "A High School student who enjoys exploring topics like history, civics, and global issues. Writes simple and engaging articles for people to help them understand and stay informed about the world." },
-            { name: "Guransh Khattar", bio: "A High School student with a strong interest in learning and personal growth. Enjoys exploring different subjects and developing self thinking skills. Focuses on clear, structured learning and constantly work on improving oneself." },
-            { name: "Diva Arora", bio: "A High School student. Exploring perspectives through expression. Writes to transform everyday moments into evocative pieces." },
-            { name: "Shrre", bio: "A High-School Student of Humanities and an aspiring author. Navigating the shadows of Criminology and the light of Philosophy to decode the depths of humanity. Strives to thread crime and philosophy into the realms of human nature." },
-            { name: "Ishita Shah", bio: "Interrogating perspectives through language, drawn to the nuanced juxtaposition of the ephemeral and the enduring. Writes to transmute the quotidian into something contemplative, where expression becomes both inquiry and meaning." }
-        ];
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<div class="lg:col-span-2 p-10 rounded-[2.5rem] border border-current-alpha bg-current-alpha relative overflow-hidden">
+<h3 class="font-serif text-xl mb-8 italic">New Weaving</h3>
 
-        let manuscripts = [];
-        let activeCat = "All";
-        let isAuth = false;
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+<div>
+<label class="text-[9px] uppercase tracking-widest font-bold opacity-40 block mb-2">Identify Yourself</label>
+<select id="manuscript-author" class="w-full border-b border-current-alpha py-2 font-serif italic text-lg cursor-pointer">
+<option value="" disabled selected>Choose Author...</option>
+<option value="Saar Tokas">Saar Tokas</option>
+<option value="Guransh Khattar">Guransh Khattar</option>
+<option value="Diva Arora">Diva Arora</option>
+<option value="Shrre">Shrre</option>
+<option value="Ishita Shah">Ishita Shah</option>
+</select>
+</div>
+<div>
+<label class="text-[9px] uppercase tracking-widest font-bold opacity-40 block mb-2">Select Category</label>
+<select id="manuscript-category" class="w-full border-b border-current-alpha py-2 font-serif italic text-lg cursor-pointer">
+<option value="" disabled selected>Choose a category...</option>
+<option value="Philosophy">Philosophy</option>
+<option value="History">History</option>
+<option value="Psychology">Psychology</option>
+<option value="Current Affairs">Current Affairs</option>
+<option value="Literature">Literature</option>
+</select>
+</div>
+</div>
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), (snap) => {
-                    manuscripts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.timestamp - a.timestamp);
-                    renderManuscripts();
-                });
-            } else { signInAnonymously(auth); }
-        });
+<input type="text" id="manuscript-title" placeholder="Title of reflection..." class="w-full bg-transparent border-b border-current-alpha py-4 mb-8 text-2xl font-serif italic text-inherit">
+<textarea id="manuscript-content" placeholder="Begin weaving your thoughts..." class="w-full bg-transparent border-b border-current-alpha py-4 mb-8 h-64 font-serif text-lg leading-relaxed text-inherit"></textarea>
 
-        window.showView = (id) => {
-            document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
-            document.getElementById(`view-${id}`).classList.remove('hide');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            const activeLink = document.getElementById(`nav-${id}`);
-            if (activeLink) activeLink.classList.add('active');
-            window.scrollTo(0, 0);
-        };
+<button onclick="executePublish()" class="px-10 py-4 btn-primary rounded-full text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95" id="publish-btn">
+Secure to Vault
+</button>
 
-        window.handleLogin = () => {
-            if (document.getElementById('passcode-input').value === '98987') {
-                isAuth = true;
-                document.getElementById('admin-btn-text').innerText = "Vault";
-                showView('dashboard');
-            }
-        };
+<div id="publish-success">
+<div class="text-center p-8">
+<i data-lucide="check-circle" class="w-12 h-12 mx-auto mb-4"></i>
+<h4 class="text-2xl font-serif italic mb-2">Manuscript Secured</h4>
+<p class="text-sm opacity-60 mb-6 tracking-wide">The thread has been woven into the digital archive.</p>
+<div class="flex flex-col gap-4 items-center">
+<button onclick="resetVault()" class="text-[10px] font-bold uppercase tracking-widest border-b border-current-alpha pb-1">Weave Another</button>
+<button onclick="showView('publications')" class="text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100">View Public Archive</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
 
-        window.logout = () => {
-            isAuth = false;
-            document.getElementById('admin-btn-text').innerText = "Entrance";
-            showView('home');
-        };
+<footer class="py-20 border-t border-current-alpha text-center opacity-40 mt-32">
+<p class="font-serif italic text-lg mb-4">"Language is the thread, thought is the needle."</p>
+<p class="text-[10px] uppercase tracking-[0.3em]">© 2026 We Weave Words · A Closed Collective · All rights reserved</p>
+</footer>
 
-        window.executePublish = async () => {
-            const title = document.getElementById('manuscript-title').value;
-            const content = document.getElementById('manuscript-content').value;
-            const cat = document.getElementById('manuscript-category').value;
-            const authName = document.getElementById('manuscript-author').value;
-            if (!title || !content || !cat || !authName) return;
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'manuscripts'), {
-                    title, content, category: cat, author: authName,
-                    timestamp: Date.now(),
-                    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-                });
-                document.getElementById('publish-success').classList.add('show');
-            } catch (e) { console.error(e); }
-        };
+<script>
+const AUTHORS_LIST = [
+{ name: "Saar Tokas", bio: "A High School student who enjoys exploring topics like history, civics, and global issues. Writes simple and engaging articles for people to help them understand and stay informed about the world." },
+{ name: "Guransh Khattar", bio: "A High School student with a strong interest in learning and personal growth. Enjoys exploring different subjects and developing self thinking skills. Focuses on clear, structured learning and constantly work on improving oneself." },
+{ name: "Diva Arora", bio: "A High School student. Exploring perspectives through expression. Writes to transform everyday moments into evocative pieces." },
+{ name: "Shrre", bio: "A High-School Student of Humanities and an aspiring author. Navigating the shadows of Criminology and the light of Philosophy to decode the depths of humanity. Strives to thread crime and philosophy into the realms of human nature." },
+{ name: "Ishita Shah", bio: "Interrogating perspectives through language, drawn to the nuanced juxtaposition of the ephemeral and the enduring. Writes to transmute the quotidian into something contemplative, where expression becomes both inquiry and meaning." }
+];
 
-        window.resetVault = () => {
-            document.getElementById('manuscript-title').value = "";
-            document.getElementById('manuscript-content').value = "";
-            document.getElementById('publish-success').classList.remove('show');
-        };
+const CATEGORIES = ["Philosophy", "History", "Psychology", "Current Affairs", "Literature"];
+let darkMode = false;
+let isAuthenticated = false;
+let activeCategory = "All";
+let manuscripts = [];
 
-        window.renderManuscripts = () => {
-            const list = document.getElementById('publications-list');
-            const filtered = activeCat === "All" ? manuscripts : manuscripts.filter(m => m.category === activeCat);
-            if (filtered.length === 0) {
-                list.innerHTML = `<div class="py-24 text-center text-dim font-serif italic text-2xl">The vault is currently silent.</div>`;
-                return;
-            }
-            list.innerHTML = filtered.map(m => `
-                <div class="manuscript-box view-transition">
-                    <div class="flex justify-between items-start mb-10">
-                        <span class="text-[11px] uppercase font-bold tracking-[0.2em] text-dim">${m.category} / ${m.date}</span>
-                        ${isAuth ? `<button onclick="deleteDocById('${m.id}')" class="text-red-700 text-[10px] font-bold uppercase">Rescind</button>` : ''}
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-serif italic mb-6 leading-tight">${m.title}</h2>
-                    <p class="text-lg text-dim font-serif italic mb-10">Woven by ${m.author}</p>
-                    <div class="font-serif text-xl leading-relaxed text-body whitespace-pre-wrap">${m.content}</div>
+function init() { 
+lucide.createIcons(); 
+renderAuthors(); 
+renderFilters(); 
+renderPublications();
+}
+
+function showView(viewId) {
+if (viewId === 'dashboard' && !isAuthenticated) { showView('admin'); return; }
+document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
+document.getElementById(`view-${viewId}`).classList.remove('hide');
+
+document.querySelectorAll('.nav-item').forEach(link => {
+const isActive = link.id === `nav-${viewId}`;
+link.classList.toggle('opacity-100', isActive);
+link.classList.toggle('opacity-40', !isActive);
+});
+
+if (viewId === 'publications') renderPublications();
+window.scrollTo(0, 0);
+lucide.createIcons();
+}
+
+function setCategoryFilter(cat) {
+activeCategory = cat;
+renderFilters();
+renderPublications();
+}
+
+function handleLogin() {
+if (document.getElementById('passcode-input').value === '98987') {
+isAuthenticated = true;
+document.getElementById('admin-btn-text').innerText = "Dashboard";
+document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'layout');
+showView('dashboard');
+resetVault();
+} else {
+document.getElementById('login-error').classList.remove('hide');
+}
+}
+
+function logout() {
+isAuthenticated = false;
+document.getElementById('admin-btn-text').innerText = "Author Entrance";
+document.getElementById('admin-btn-icon').setAttribute('data-lucide', 'key');
+showView('home');
+}
+
+function executePublish() {
+const title = document.getElementById('manuscript-title').value;
+const content = document.getElementById('manuscript-content').value;
+const category = document.getElementById('manuscript-category').value;
+const author = document.getElementById('manuscript-author').value;
+
+if (!title || !content || !category || !author) {
+const btn = document.getElementById('publish-btn');
+btn.innerText = "Incomplete Thread";
+setTimeout(() => btn.innerText = "Secure to Vault", 2000);
+return;
+}
+
+const newManuscript = {
+id: Date.now(),
+title,
+content,
+category,
+author,
+likes: 0,
+likedByMe: false,
+comments: [],
+date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+};
+
+manuscripts.unshift(newManuscript);
+document.getElementById('publish-btn').innerText = "Weaving...";
+setTimeout(() => {
+document.getElementById('publish-success').classList.add('show');
+lucide.createIcons();
+}, 1000);
+}
+
+function toggleLike(id) {
+const ms = manuscripts.find(m => m.id === id);
+if (ms) {
+ms.likedByMe = !ms.likedByMe;
+ms.likes += ms.likedByMe ? 1 : -1;
+renderPublications();
+}
+}
+
+function addComment(id) {
+const input = document.getElementById(`comment-input-${id}`);
+const text = input.value.trim();
+if (!text) return;
+
+const ms = manuscripts.find(m => m.id === id);
+if (ms) {
+ms.comments.push({
+id: Date.now(),
+text: text,
+date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+});
+input.value = "";
+renderPublications();
+}
+}
+
+function deleteManuscript(id) {
+if (!isAuthenticated) return;
+manuscripts = manuscripts.filter(m => m.id !== id);
+renderPublications();
+}
+
+function renderPublications() {
+const container = document.getElementById('publications-list');
+const filtered = activeCategory === "All" ? manuscripts : manuscripts.filter(m => m.category === activeCategory);
+
+if (filtered.length === 0) {
+container.innerHTML = `<div class="py-40 text-center opacity-30 font-serif italic text-xl">No manuscripts found in the digital vault.</div>`;
+return;
+}
+
+container.innerHTML = filtered.map(m => `
+               <article class="manuscript-box bg-current-alpha border-current-alpha view-transition overflow-hidden">
+                   <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
+                       <div class="flex items-center gap-3">
+                           <span class="px-3 py-1 border border-current-alpha rounded-full text-[9px] uppercase tracking-[0.2em] font-bold opacity-60">${m.category}</span>
+                           <span class="text-[9px] uppercase tracking-[0.3em] opacity-40 font-bold">${m.date}</span>
+                       </div>
+                       ${isAuthenticated ? `<button onclick="deleteManuscript(${m.id})" class="text-[9px] uppercase font-bold tracking-widest text-red-800 opacity-60 hover:opacity-100 flex items-center gap-2 transition-opacity"><i data-lucide="trash-2" class="w-3"></i> Rescind Manuscript</button>` : ''}
+                   </div>
+                   
+                   <!-- Author Attribution -->
+                   <div class="mb-4 flex items-center gap-2 opacity-50">
+                       <span class="text-[10px] uppercase font-bold tracking-[0.1em]">Woven By</span>
+                       <span class="text-sm font-serif italic border-b border-current-alpha">${m.author}</span>
+                   </div>
+
+                   <h2 class="text-3xl font-serif italic mb-6 leading-tight">${m.title}</h2>
+                   <div class="font-serif text-lg leading-relaxed opacity-80 whitespace-pre-wrap mb-10">${m.content}</div>
+                   
+                   <div class="border-t border-current-alpha pt-6 flex items-center gap-8">
+                       <button onclick="toggleLike(${m.id})" class="interaction-btn ${m.likedByMe ? 'liked' : ''}">
+                           <i data-lucide="heart" class="w-4 ${m.likedByMe ? 'fill-current' : ''}"></i>
+                           <span>${m.likes} Likes</span>
+                       </button>
+                       <div class="interaction-btn">
+                           <i data-lucide="message-circle" class="w-4"></i>
+                           <span>${m.comments.length} Threads</span>
+                       </div>
+                   </div>
+
+                   <div class="mt-8">
+                       <div class="flex gap-4 mb-6">
+                           <input type="text" id="comment-input-${m.id}" placeholder="Add to the thread..." class="flex-1 text-sm border-b border-current-alpha py-2 italic font-serif opacity-70">
+                           <button onclick="addComment(${m.id})" class="text-[9px] uppercase font-bold tracking-[0.2em] opacity-40 hover:opacity-100">Woven</button>
+                       </div>
+                       <div class="space-y-4">
+                           ${m.comments.map(c => `
+                               <div class="comment-item text-sm opacity-60">
+                                   <div class="flex justify-between items-center mb-1">
+                                       <span class="text-[8px] uppercase font-bold tracking-widest">Anonymous</span>
+                                       <span class="text-[8px] opacity-60">${c.date}</span>
+                                   </div>
+                                   <p class="font-serif italic">${c.text}</p>
+                               </div>
+                           `).join('')}
+                       </div>
+                   </div>
+               </article>
+           `).join('');
+lucide.createIcons();
+}
+
+function resetVault() {
+document.getElementById('manuscript-title').value = "";
+document.getElementById('manuscript-content').value = "";
+document.getElementById('manuscript-category').value = "";
+document.getElementById('manuscript-author').value = "";
+document.getElementById('publish-success').classList.remove('show');
+document.getElementById('publish-btn').innerText = "Secure to Vault";
+}
+
+function toggleDarkMode() {
+darkMode = !darkMode;
+const body = document.getElementById('body');
+body.classList.toggle('light-mode', !darkMode);
+body.classList.toggle('dark-mode', darkMode);
+document.getElementById('theme-toggle').innerHTML = darkMode ? `<i data-lucide="sun" class="w-[18px]"></i>` : `<i data-lucide="moon" class="w-[18px]"></i>`;
+lucide.createIcons();
+}
+
+function renderFilters() {
+const filters = ["All", ...CATEGORIES];
+document.getElementById('category-filters').innerHTML = filters.map(cat => `
+                <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 $
+                <button onclick="setCategoryFilter('${cat}')" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-all opacity-40 hover:opacity-100 ${activeCategory === cat ? 'active-filter' : ''}">${cat}</button>
+            `).join('');
+        }
+
+        function renderAuthors() {
+            document.getElementById('authors-grid').innerHTML = AUTHORS_LIST.map(a => `
+                <div class="group border-l border-current-alpha pl-8 transition-colors hover:border-current">
+                    <h3 class="text-3xl font-serif italic mb-4">${a.name}</h3>
+                    <p class="text-lg opacity-60 font-serif italic leading-relaxed">${a.bio}</p>
                 </div>
             `).join('');
-        };
+        }
 
-        window.deleteDocById = async (id) => {
-            if (confirm("Delete this manuscript?")) {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'manuscripts', id));
-            }
-        };
-
-        window.setCat = (c) => {
-            activeCat = c;
-            renderFilters();
-            renderManuscripts();
-        };
-
-        window.renderFilters = () => {
-            const cats = ["All", "Philosophy", "History", "Psychology", "Current Affairs", "Literature"];
-            document.getElementById('category-filters').innerHTML = cats.map(c => `
-                <button onclick="setCat('${c}')" class="px-6 py-2 text-[11px] font-bold uppercase tracking-widest transition-all ${activeCat === c ? 'opacity-100 border-b-2 border-current' : 'opacity-40 hover:opacity-100'}">${c}</button>
-            `).join('');
-        };
-
-        window.toggleDarkMode = () => {
-            const body = document.getElementById('body');
-            const icon = document.getElementById('theme-icon-svg');
-            const isDark = body.classList.toggle('dark-mode');
-            body.classList.toggle('light-mode', !isDark);
-            
-            // Swap SVG content manually for reliability
-            if (isDark) {
-                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
-            } else {
-                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-            }
-        };
-
-        document.getElementById('authors-grid').innerHTML = AUTHORS.map(a => `
-            <div class="group border-l-2 border-current border-opacity-20 pl-8">
-                <h3 class="text-4xl font-serif italic mb-6">${a.name}</h3>
-                <p class="text-xl font-serif italic leading-relaxed text-body">${a.bio}</p>
-            </div>
-        `).join('');
-
-        renderFilters();
-        showView('home');
+        window.onload = init;
     </script>
 </body>
 </html>
